@@ -1,0 +1,3334 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UWorld - Exam System</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#0a5d86;
+  --accent:#BFE8FF;
+  --text:#0e2a3b;
+  --text-strong:#102330;
+  --bg:#f7fbff;
+  --card:#ffffff;
+  --muted:#5d7283;
+  --success:#4caf50;
+  --danger:#f44336;
+  --border:#e5eef5;
+  --hover-bg:#f4f9fd;
+  --selected-bg:#eaf4fb;
+  --surface:#f2f8fc;
+  --elev-1: 0 1px 4px rgba(0,0,0,.06);
+  --elev-2: 0 6px 18px rgba(0,0,0,.12);
+  --radius: 12px;
+}
+html, body{height:100%}
+html{ scroll-behavior: smooth; }
+body{
+  background:var(--bg);
+  font-family:Arial, Helvetica, sans-serif;
+  min-height:100vh;
+  padding:20px;
+  color:var(--text);
+  line-height:1.6;
+}
+.container{
+  max-width: calc(100vw - 24px); width: calc(100vw - 24px);
+  margin:0 auto;background:var(--card);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  overflow:hidden;color:var(--text);
+  box-shadow: var(--elev-1);
+}
+
+h1,h2,h3,strong{color:var(--text-strong)}
+p,span,li,td,th,small{color:var(--text)}
+a{color:var(--primary);text-decoration:none}
+a:hover{filter:brightness(.9)}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--border);background:var(--card);
+}
+.topbar .brand{display:flex;align-items:center;gap:12px}
+.topbar .brand .title{font-weight:700;color:var(--primary);font-size:16px}
+.topbar .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.toggle-btn, .btn{
+  border:1px solid var(--border);background:var(--card);color:var(--primary);
+  border-radius:var(--radius);padding:8px 12px;cursor:pointer;font-size:12px;
+  min-height:44px; line-height:1;
+  transition:filter .2s ease, transform .05s ease;
+}
+.actions .btn, .actions .toggle-btn{height:44px;padding:0 16px;display:flex;align-items:center;justify-content:center;font-weight:600;border-radius:10px}
+.btn{border-color:transparent}
+.toggle-btn:hover, .btn:hover{filter:brightness(.98)}
+.btn:active, .toggle-btn:active{ transform: translateY(1px); filter: brightness(.97) }
+.btn-primary{background:var(--primary);color:#fff;border:1px solid var(--primary)}
+.btn-secondary{background:var(--primary);color:#fff;border-color:#8ec9e9}
+
+/* topbar CTA buttons */
+.btn-visit{
+  background:#ffffff;
+  border:1px solid var(--border);
+  color:var(--primary);
+}
+.btn-email{
+  background:#0b4a6f;
+  color:#ffffff;
+  border-color:#0b4a6f;
+}
+.btn-whatsapp{
+  background:#25d366;
+  color:#ffffff;
+  border-color:#1ebe5a;
+}
+
+/* hero */
+.header{
+  position:relative;
+  background:
+    radial-gradient(1200px 600px at 10% -20%, rgba(170,222,245,.2), transparent 60%),
+    radial-gradient(800px 400px at 110% 0%, rgba(11,74,111,.08), transparent 50%),
+    linear-gradient(145deg, var(--primary) 0%, #0b4a6f 100%);
+  color:#fff; text-align:center; padding:56px 28px 44px;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+}
+.header h1{font-size:2.02em;letter-spacing:.2px;margin-bottom:6px;color:#fff}
+.header p{font-size:1.05em;color:var(--accent);opacity:.95;margin-bottom:6px}
+
+/* UWorld hero logo */
+.uworld-logo-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  margin-bottom:18px;
+}
+.uworld-logo-img{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  object-fit:contain;
+}
+.uworld-logo-text-main{
+  font-size:1.6em;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+.uworld-logo-text-sub{
+  font-size:.8em;
+  letter-spacing:.20em;
+  opacity:.8;
+}
+
+/* logo animations */
+.ma-logo-anim,
+.uworld-logo-anim{
+  animation:logoEnter .9s ease-out, logoGlow 10s ease-in-out infinite;
+  transform-origin:center;
+}
+@keyframes logoEnter{
+  0%{opacity:0;transform:translateY(-18px) scale(.96);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+@keyframes logoGlow{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(0,193,255,0));}
+  40%{filter:drop-shadow(0 0 18px rgba(0,193,255,.9));}
+  60%{filter:drop-shadow(0 0 10px rgba(0,193,255,.6));}
+}
+
+.content{padding:26px 26px 34px}
+.content-section{display:none}
+.content-section.active{display:block}
+
+.main-menu{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px,1fr));gap:20px;margin-top:20px}
+.menu-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:30px;cursor:pointer;transition:all .25s ease;text-align:center;
+  box-shadow: var(--elev-1);
+}
+.menu-card:hover{transform:translateY(-3px);border-color:var(--primary); box-shadow: var(--elev-2)}
+.menu-card .icon{font-size:3em;margin-bottom:15px}
+.menu-card h2{font-size:1.5em;margin-bottom:10px;color:var(--text-strong)}
+
+.category-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(220px,1fr));gap:12px;margin-top:12px}
+.category-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 14px;cursor:pointer;transition:all .25s ease;
+  min-height:50px; box-shadow: var(--elev-1);
+}
+.category-card:hover{transform:translateY(-1px);background:var(--hover-bg);border-color:var(--primary); box-shadow: var(--elev-2)}
+.category-card h3{margin-bottom:3px;font-size:0.95em; line-height:1.3}
+.category-card .count{font-size:.82em;color:var(--muted)}
+
+.category-group{
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  margin-bottom:10px;
+  transition:all .3s ease;
+}
+.main-category{
+  background:var(--surface)!important;
+  border:2px solid var(--border)!important;
+  margin-bottom:8px;
+  padding:10px 12px!important;
+}
+.main-category h3::before{
+  content:'📁 ';
+}
+.subcategory-container{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+  gap:8px;
+  margin-left:16px;
+}
+.subcategory-card h3::before{
+  content:'└─ ';
+  color:var(--muted);
+}
+
+.tree-view{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px;max-height:500px;overflow-y:auto}
+.tree-node{margin:5px 0}
+.tree-label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:6px;cursor:pointer;transition:background .2s}
+.tree-label:hover{background:var(--hover-bg)}
+.tree-toggle{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;user-select:none;flex-shrink:0}
+.tree-checkbox{width:18px;height:18px;cursor:pointer;flex-shrink:0}
+.tree-text{flex:1;font-size:14px}
+.tree-count{font-size:12px;color:var(--muted);margin-left:auto}
+.tree-children{margin-left:28px;display:none}
+.tree-children.expanded{display:block}
+
+.media-section{margin:25px 0}
+.media-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:15px}
+.media-item{cursor:pointer;transition:transform 0.3s;position:relative}
+.media-item:hover{transform:scale(1.05)}
+.media-item img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:8px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  display:block;
+}
+.media-item .caption{
+  text-align:center;
+  margin-top:5px;
+  font-size:0.9em;
+  font-weight:bold;
+  color:var(--primary)
+}
+
+/* Watermark overlay removed by request — keep .ma-watermarked positioning only. */
+.ma-watermarked,
+.ma-image-wrapper{
+  position:relative;
+  display:inline-block;
+}
+.ma-watermarked::after,
+.ma-watermarked::before{
+  content:none !important;
+  display:none !important;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  z-index:1000;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.95);
+  justify-content:center;
+  align-items:center;
+  padding:20px
+}
+.modal.show{display:flex}
+.modal-content{
+  max-width:90%;
+  max-height:90%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px
+}
+.modal-content img{
+  max-width:100%;
+  max-height:80vh;
+  border-radius:10px;
+  box-shadow:0 0 30px rgba(0,0,0,0.5)
+}
+.modal-caption{
+  color:#fff;
+  font-size:1.2em;
+  text-align:center;
+  padding:15px;
+  background:rgba(0,0,0,0.7);
+  border-radius:8px;
+  max-width:800px
+}
+.modal-close{
+  position:absolute;
+  top:30px;
+  right:50px;
+  color:#fff;
+  font-size:50px;
+  cursor:pointer;
+  background:rgba(0,0,0,0.5);
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .3s;
+  z-index:1001;
+}
+.modal-close:hover{
+  background:rgba(255,0,0,0.8);
+  transform:scale(1.1)
+}
+
+.exam-setup{background:var(--surface);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.exam-setup h3{color:var(--primary);margin-bottom:15px}
+.exam-controls{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px,1fr));gap:20px;margin-top:15px}
+.control-group{display:flex;flex-direction:column;gap:8px}
+.control-group label{font-weight:bold;color:var(--text)}
+.control-group input{padding:12px;border:2px solid var(--border);border-radius:8px;font-size:1em}
+.control-group input:focus{outline:none;border-color:var(--primary)}
+.selected-info{background:var(--card);padding:15px;border-radius:8px;margin-top:15px}
+
+.question-card{background:var(--card);border-left:5px solid var(--primary);border-radius:var(--radius);padding:25px;margin-bottom:20px;box-shadow: var(--elev-1)}
+.question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid var(--border);flex-wrap:wrap;gap:10px}
+.question-number{font-size:1.2em;font-weight:bold;color:var(--primary)}
+.timer{background:var(--success);color:#fff;padding:8px 20px;border-radius:25px;font-size:1em;font-weight:bold}
+.timer.warning{background:#ffc107}
+.timer.critical{background:var(--danger);animation:blink 0.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.7}}
+.question-stem{font-size:1.1em;line-height:1.8;margin-bottom:25px;color:var(--text)}
+
+.progress-section{margin:20px 0;position:relative}
+.progress-bar{width:100%;height:8px;background:var(--border);border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg, var(--primary), var(--accent));transition:width .3s ease}
+.progress-info{display:flex;justify-content:space-between;margin-top:8px;font-size:.9em;color:var(--muted)}
+.progress-tooltip{
+  position:absolute;
+  bottom:20px;
+  background:#333;
+  color:#fff;
+  padding:5px 10px;
+  border-radius:5px;
+  font-size:12px;
+  pointer-events:none;
+  display:none;
+  white-space:nowrap;
+  z-index:10;
+}
+.progress-tooltip.show{display:block}
+
+.answer-options{margin:25px 0}
+.answer-option{
+  background:var(--card);border:2px solid var(--border);border-radius:var(--radius);
+  padding:15px 20px;margin-bottom:15px;transition:all .3s;display:flex;
+  align-items:flex-start;gap:15px;cursor:pointer;
+}
+.learning-mode .answer-option{cursor:pointer}
+.exam-mode .answer-option{cursor:pointer}
+.exam-mode .answer-option:hover:not(.disabled):not(.selected){border-color:var(--primary);background:var(--hover-bg)}
+.learning-mode .answer-option:hover{border-color:var(--primary);background:var(--hover-bg)}
+.answer-option.selected{border-color:var(--primary);background:var(--selected-bg)}
+.answer-option.correct{border-color:var(--success);background:#e8f5e9}
+.answer-option.incorrect{border-color:var(--danger);background:#ffebee}
+.answer-option.disabled{cursor:not-allowed;opacity:0.7}
+.answer-option .option-letter{
+  background:var(--primary);color:#fff;width:35px;height:35px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;
+}
+.answer-option.correct .option-letter{background:var(--success)}
+.answer-option.incorrect .option-letter{background:var(--danger)}
+.answer-option.selected .option-letter{background:#0056b3}
+.answer-option .option-content{flex:1}
+.answer-option .option-text{line-height:1.6;margin-bottom:10px;color:var(--text)!important}
+.answer-option .option-text *{color:var(--text)!important;background:transparent!important}
+.answer-option .option-image{max-width:300px;border-radius:8px;margin-top:10px;cursor:pointer}
+
+.commentary{background:#fff3cd;border-left:5px solid #ffc107;padding:25px;border-radius:var(--radius);margin-top:25px;display:none}
+.commentary.show{display:block;animation:slideDown 0.5s}
+@keyframes slideDown{from{opacity:0;max-height:0}to{opacity:1;max-height:5000px}}
+.commentary h4{color:#856404;margin-bottom:15px;font-size:1.2em}
+.commentary-content{line-height:1.8;color:#000!important}
+.commentary-content *{color:#000!important;background:transparent!important}
+
+.navigation{display:flex;justify-content:space-between;gap:15px;margin-top:30px;position:relative}
+.navigation button{padding:15px 35px;font-size:1.1em;border:none;border-radius:10px;cursor:pointer;background:var(--primary);color:#fff;font-weight:bold;transition:all .3s}
+.navigation button:hover:not(:disabled):not(.center-btn){background:#0b4a6f;transform:scale(1.05)}
+.navigation button:disabled{background:#ccc;cursor:not-allowed}
+.navigation .center-btn{position:absolute;left:50%;transform:translateX(-50%);background:#28a745}
+.navigation .center-btn:hover{background:#218838}
+
+.exam-results{padding:30px}
+.results-header{background:linear-gradient(135deg, var(--primary) 0%, #0b4a6f 100%);color:#fff;padding:30px;border-radius:15px;text-align:center;margin-bottom:30px}
+.results-header h2{font-size:2em;margin-bottom:15px;color:#fff}
+.results-header .score{font-size:3em;font-weight:bold;margin:15px 0}
+.results-header .percentage{font-size:1.5em}
+.question-list{display:grid;grid-template-columns:repeat(auto-fill, minmax(100px,1fr));gap:15px;margin-top:30px}
+.question-item{padding:20px;border-radius:10px;text-align:center;font-weight:bold;cursor:pointer;transition:all .3s;border:2px solid transparent}
+.question-item:hover{transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,0,0,0.2)}
+.question-item.correct{background:#d4edda;color:#155724;border-color:var(--success)}
+.question-item.incorrect{background:#f8d7da;color:#721c24;border-color:var(--danger)}
+.question-item.unanswered{background:#e2e3e5;color:#383d41;border-color:#6c757d}
+
+.time-up-modal{position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center}
+.time-up-modal.show{display:flex}
+.time-up-content{background:var(--card);padding:50px;border-radius:20px;text-align:center;max-width:500px}
+.time-up-content h2{color:var(--danger);font-size:2.5em;margin-bottom:20px}
+.time-up-content p{font-size:1.2em;margin-bottom:30px;color:var(--text)}
+.time-up-content button{background:var(--primary);color:#fff;border:none;padding:15px 40px;border-radius:10px;font-size:1.2em;cursor:pointer;transition:all .3s}
+.time-up-content button:hover{background:#0b4a6f;transform:scale(1.05)}
+
+.loading{text-align:center;padding:50px}
+.spinner{border:5px solid #f3f3f3;border-top:5px solid var(--primary);border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;margin:0 auto 20px}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+html.dark{
+  --bg:#0c1218;
+  --card:#0f1a24;
+  --border:#1b2b39;
+  --text:#e6f2fa;
+  --text-strong:#ffffff;
+  --primary:#66a9cc;
+  --accent:#8fd4ff;
+  --hover-bg: rgba(143,212,255,.08);
+  --selected-bg: rgba(143,212,255,.12);
+  --surface:#122433;
+}
+html.dark body{background:var(--bg);color:var(--text)}
+html.dark .topbar{background:var(--card);border-color:var(--border)}
+html.dark .topbar .brand .title{color:var(--accent)}
+html.dark .toggle-btn{background:var(--card);color:var(--accent);border-color:var(--border)}
+html.dark .category-card{background:var(--card);border-color: rgba(255,255,255,.06)}
+html.dark .category-card:hover{background:var(--hover-bg)}
+html.dark .menu-card{background:var(--card);border-color:var(--border)}
+html.dark .menu-card:hover{background:var(--hover-bg)}
+html.dark .exam-setup{background:var(--surface)}
+html.dark .question-card, html.dark .answer-option{background:var(--card);border-color:rgba(255,255,255,.06)}
+html.dark .time-up-content{background:var(--card);color:var(--text)}
+html.dark .answer-option .option-text{color:var(--text)!important}
+html.dark .answer-option .option-text *{color:var(--text)!important}
+html.dark .main-category{background:var(--surface)!important;}
+html.dark .category-group{border-color:var(--border);}
+html.dark .media-item img{box-shadow:0 3px 10px rgba(255,255,255,0.1)}
+html.dark .tree-view{background:var(--card);border-color:var(--border)}
+
+@media (max-width:768px){
+  .media-grid{grid-template-columns:repeat(2, 1fr)}
+  .category-grid{grid-template-columns:1fr}
+  .main-menu{grid-template-columns:1fr}
+  .subcategory-container{grid-template-columns:1fr!important;margin-left:10px!important;}
+  .modal-close{top:15px;right:15px;width:50px;height:50px;font-size:40px}
+}
+
+@media (max-width:480px){
+  .media-grid{grid-template-columns:1fr}
+  .media-item img{height:200px}
+}
+
+/* inline loading */
+.loading-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin-left: 20px;
+    font-size: 0.9em;
+    color: var(--muted);
+}
+.spinner-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* footer */
+.ma-footer{
+  max-width:980px;
+  margin:12px auto 0;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+.ma-footer a{font-weight:bold}
+
+/* Brand Guard overlay */
+.ma-lock-overlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:radial-gradient(circle at top, rgba(11,74,111,.85), #050913 65%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  transition:opacity .4s ease;
+}
+.ma-lock-overlay.ma-hide{
+  opacity:0;
+  pointer-events:none;
+}
+.ma-lock-box{
+  max-width:480px;
+  width:100%;
+  background:rgba(5,12,20,.96);
+  border-radius:18px;
+  padding:24px 24px 20px;
+  box-shadow:0 18px 45px rgba(0,0,0,.6);
+  color:#e8f4ff;
+  text-align:center;
+}
+.ma-lock-logo{
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-size:12px;
+  color:#e8f4ff;
+  margin-bottom:6px;
+}
+.ma-lock-title{
+  font-size:1.4em;
+  margin-bottom:10px;
+}
+.ma-lock-text{
+  color:#ffffff;
+  font-size:.95em;
+  line-height:1.6;
+  opacity:.9;
+  margin-bottom:18px;
+}
+.ma-lock-btn{
+  border:none;
+  background:#29b36b;
+  color:#fff;
+  padding:10px 26px;
+  border-radius:999px;
+  font-weight:600;
+  cursor:pointer;
+  font-size:.95em;
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.55);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.ma-lock-btn:hover{
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 14px 32px rgba(0,0,0,.75);
+}
+.ma-lock-note{
+  margin-top:10px;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:.7;
+}
+
+/* end Brand Guard */
+
+/* Mobile responsiveness tweaks (non-breaking, layout-only) */
+@media (max-width: 768px) {
+  body{
+    padding:12px;
+  }
+  .container{
+    border-radius:10px;
+  }
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .topbar .brand{
+    width:100%;
+    justify-content:flex-start;
+  }
+  .topbar .actions{
+    width:100%;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .actions .btn,
+  .actions .toggle-btn{
+    flex:1 1 calc(50% - 6px);
+    min-width:0;
+  }
+  .header{
+    padding:32px 18px 26px;
+  }
+  .content{
+    padding:18px 16px 24px;
+  }
+  .exam-controls{
+    grid-template-columns:1fr;
+  }
+  .question-card{
+    padding:18px 14px;
+  }
+  .question-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .answer-option{
+    padding:12px 12px;
+    gap:10px;
+  }
+  .answer-option .option-letter{
+    width:32px;
+    height:32px;
+  }
+  .navigation{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .navigation button{
+    width:100%;
+    justify-content:center;
+  }
+  .navigation .center-btn{
+    position:static;
+    transform:none;
+    margin:6px 0;
+  }
+  .tree-view{
+    max-height:420px;
+  }
+  .question-stem{
+    font-size:1rem;
+  }
+  .exam-results{
+    padding:20px 16px 32px;
+  }
+  .results-header{
+    padding:22px 16px;
+  }
+  .question-list{
+    grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
+  }
+  .modal-content{
+    max-width:100%;
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 480px) {
+  body{
+    padding:8px;
+  }
+  .container{
+    border-radius:8px;
+  }
+  .uworld-logo-img{
+    width:80px;
+    height:80px;
+  }
+  .uworld-logo-text-main{
+    font-size:1.3em;
+  }
+  .menu-card{
+    padding:20px 16px;
+  }
+  .question-card{
+    padding:16px 12px;
+  }
+  .answer-option{
+    padding:10px 10px;
+  }
+  .timer{
+    width:100%;
+    text-align:center;
+    justify-content:center;
+    display:flex;
+  }
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.12);
+  z-index: 9999;
+}
+
+.bottom-nav button {
+  background: #f4f8fb;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 14px;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #0b4a6f;
+  font-weight: 600;
+}
+
+/* Fullscreen Modals (Support & About) */
+.custom-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -100%;
+  background: #ffffff;
+  padding: 28px 22px;
+  text-align: center;
+  transition: 0.35s;
+  box-shadow: 0 -2px 20px rgba(0,0,0,0.2);
+  border-radius: 18px 18px 0 0;
+  z-index: 99999;
+}
+
+.custom-modal.active {
+  bottom: 0;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #0b4a6f;
+}
+
+.modal-item {
+  background: #f4f8fb;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.modal-item span {
+  color: #0b4a6f;
+  font-weight: 700;
+}
+
+.close-btn {
+  margin-top: 20px;
+  background: #0b4a6f;
+  color: #fff;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* Soft Glow Effect on Bottom Nav Buttons */
+.bottom-nav button {
+  position: relative;
+  overflow: hidden;
+}
+
+.bottom-nav button:active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 14px rgba(11, 74, 111, 0.55);
+  animation: softGlow 0.25s ease-out;
+}
+
+@keyframes softGlow {
+  0% { opacity: 0.0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== TEXT HIGHLIGHT (MEDIUM VERSION) ===== */
+
+/* highlight colors */
+.hl-yellow {
+  background: #fff6a7;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+.hl-green {
+  background: #c8f7c5;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+.hl-blue {
+  background: #cfe9ff;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+/* floating color palette */
+#highlight-palette {
+  position: absolute;
+  display: none;
+  padding: 6px 10px;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  z-index: 99998;
+  align-items: center;
+  gap: 6px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#highlight-palette .hp-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+#highlight-palette .hp-color.yellow { background: #ffe36f; }
+#highlight-palette .hp-color.green  { background: #8adf8a; }
+#highlight-palette .hp-color.blue   { background: #7cb5ff; }
+
+#highlight-palette .hp-remove {
+  margin-left: 4px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* === Medicine Academy Splash Overlay === */
+#ma-splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0b4a6f, #0fb2ff);
+  font-family: Arial, sans-serif;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+#ma-splash-overlay.ma-splash-hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ma-splash-container {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px 24px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.ma-splash-box {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 24px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+}
+
+.ma-splash-box img {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+.ma-splash-title {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.ma-splash-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 24px;
+}
+
+.ma-splash-loading {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.25);
+  position: relative;
+}
+
+.ma-splash-loading::after {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  background: #ffffff;
+  animation: ma-splash-slide 1.4s infinite ease-in-out;
+}
+
+@keyframes ma-splash-slide {
+  0%   { left: -40%; }
+  50%  { left: 60%; }
+  100% { left: 100%; }
+}
+
+.ma-splash-footer {
+  margin-top: 18px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* === Exam Results – Advanced Layout === */
+.results-layout{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+  margin:20px 0 30px 0;
+}
+
+.results-chart-card,
+.results-stats-card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px 16px 20px;
+  box-shadow: var(--elev-1);
+  border:1px solid var(--border);
+}
+
+/* === Motivational Message Card === */
+.results-message-card{
+  margin: 18px 0 4px;
+  border-radius: 14px;
+  padding: 16px 18px 18px;
+  box-shadow: var(--elev-1);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #ffffff, #f4f9ff);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.results-message-title{
+  font-size: 1.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.results-message-body{
+  font-size: .95em;
+  line-height: 1.7;
+}
+
+/* رنگ بر اساس اسکور */
+.results-message-low{
+  border-color: #f8d7da;
+  background: linear-gradient(135deg, #fff5f5, #ffecec);
+}
+.results-message-low .results-message-title{
+  color: #c82333;
+}
+
+.results-message-medium{
+  border-color: #ffe8a1;
+  background: linear-gradient(135deg, #fffaf0, #fff4d4);
+}
+.results-message-medium .results-message-title{
+  color: #ff9800;
+}
+
+.results-message-high{
+  border-color: #c3e6cb;
+  background: linear-gradient(135deg, #f0fff5, #e6f9ec);
+}
+.results-message-high .results-message-title{
+  color: #2e7d32;
+}
+
+.results-chart-card h3,
+.results-stats-card h3{
+  margin-bottom:12px;
+  color:var(--primary);
+}
+
+.results-chart-wrapper{
+  position:relative;
+  width:180px;
+  height:180px;
+  margin:0 auto 8px;
+}
+
+.results-chart{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
+
+.chart-bg{
+  fill:none;
+  stroke:#e9f1f7;
+  stroke-width:4;
+}
+
+.chart-segment{
+  fill:none;
+  stroke-width:4;
+  stroke-linecap:round;
+}
+
+.chart-segment.correct{ stroke:#4caf50; }     /* سبز */
+.chart-segment.incorrect{ stroke:#f44336; }   /* قرمز */
+.chart-segment.unanswered{ stroke:#ffc107; }  /* زرد */
+
+.results-chart-center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.results-chart-score{
+  font-size:1.6em;
+  font-weight:700;
+  color:var(--text-strong);
+}
+
+.results-chart-label{
+  font-size:.8em;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--muted);
+}
+
+.results-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 16px;
+  justify-content:center;
+  margin-top:8px;
+  font-size:.9em;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.legend-color{
+  width:12px;
+  height:12px;
+  border-radius:3px;
+}
+
+.legend-color.correct{ background:#4caf50; }
+.legend-color.incorrect{ background:#f44336; }
+.legend-color.unanswered{ background:#ffc107; }
+
+.results-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;
+}
+
+.results-stat{
+  padding:10px 8px;
+  border-radius:10px;
+  background:var(--surface);
+}
+
+.results-stat .stat-label{
+  font-size:.8em;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+.results-stat .stat-value{
+  font-size:1.3em;
+  font-weight:700;
+  color:var(--text-strong);
+}
+
+.results-stat .stat-sub{
+  font-size:.8em;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+@media (max-width:768px){
+  .results-chart-wrapper{
+    width:150px;
+    height:150px;
+  }
+}
+
+/* === Force White Text in Exam Results Header === */
+.results-header,
+.results-header * {
+    color: #ffffff !important;
+}
+
+/* === Enhanced Session Stats Card (Medicine Academy style) === */
+.results-stats-card{
+  position: relative;
+  background: radial-gradient(circle at top left, rgba(170,222,245,0.45), transparent 55%),
+              linear-gradient(135deg, #f6fbff 0%, #edf5ff 100%);
+  border-radius: 18px;
+  padding: 20px 18px 22px;
+  box-shadow: 0 14px 36px rgba(11,74,111,0.12);
+  border: 1px solid rgba(11,74,111,0.06);
+  overflow: hidden;
+}
+
+/* نوار باریک بالای کارت (accent) */
+.results-stats-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  height:4px;
+  background:linear-gradient(90deg,#0b4a6f,#0fb2ff);
+  opacity:0.9;
+}
+
+/* عنوان کارت */
+.results-stats-card h3{
+  margin-top:10px;       /* چون نوار بالا داریم */
+  margin-bottom:14px;
+  font-size:0.95rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:#0b4a6f;
+}
+
+/* گرید داخلی */
+.results-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+}
+
+/* باکس هر استت */
+.results-stat{
+  position:relative;
+  padding:12px 10px 11px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.9);
+  box-shadow:0 8px 20px rgba(15,76,117,0.08);
+  border:1px solid rgba(15,76,117,0.06);
+  transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+/* افکت هاور */
+.results-stat:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 26px rgba(15,76,117,0.16);
+  border-color:rgba(15,76,117,0.18);
+}
+
+/* نقطه رنگی سمت چپ هر استت */
+.results-stat::before{
+  content:"";
+  position:absolute;
+  left:10px;
+  top:14px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#0fb2ff;
+  box-shadow:0 0 0 4px rgba(15,178,255,0.18);
+}
+
+/* استت اول، دوم، سوم رنگ متفاوت بگیرند */
+.results-stat:nth-child(1)::before{ background:#4caf50; box-shadow:0 0 0 4px rgba(76,175,80,0.18); }
+.results-stat:nth-child(2)::before{ background:#ff9800; box-shadow:0 0 0 4px rgba(255,152,0,0.2); }
+.results-stat:nth-child(3)::before{ background:#2196f3; box-shadow:0 0 0 4px rgba(33,150,243,0.2); }
+
+.results-stat .stat-label{
+  padding-left:14px;   /* جا برای دایره رنگی */
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.09em;
+  color:#607d8b;
+  margin-bottom:4px;
+}
+
+.results-stat .stat-value{
+  padding-left:14px;
+  font-size:1.4rem;
+  font-weight:700;
+  color:#0b1924;
+}
+
+.results-stat .stat-sub{
+  padding-left:14px;
+  font-size:0.8rem;
+  color:#78909c;
+  margin-top:2px;
+}
+
+/* موبایل کمی فشرده‌تر شود */
+@media (max-width:768px){
+  .results-stats-card{
+    border-radius:16px;
+    padding:18px 14px 20px;
+  }
+  .results-stats-grid{
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  }
+}
+
+/* === Responsive Images for All Questions / Explanations / Review === */
+.question-container img,
+.explanation-container img,
+#question-review-container img,
+img {
+    max-width: 100% !important;   /* Prevent overflow */
+    height: auto !important;      /* Maintain aspect ratio */
+    display: block;
+    margin: 12px auto;            /* Center and add spacing */
+    border-radius: 8px;           /* Optional: rounded corners */
+    object-fit: contain;          /* Avoid distortion */
+}
+
+/* ==================================================================
+   Ports from Step 2 customizations
+   ================================================================== */
+
+/* Restore proper list indentation inside question stems and explanations
+   — global "* { padding: 0 }" reset earlier strips the default ~40px list
+   gutter, so wrapped lines align under the number instead of the text. */
+.commentary-content ol,
+.commentary-content ul,
+.question-stem ol,
+.question-stem ul {
+    padding-left: 36px !important;
+    margin: 8px 0 !important;
+    list-style-position: outside !important;
+}
+.commentary-content li,
+.question-stem li {
+    margin-bottom: 6px;
+    line-height: 1.55;
+    padding-left: 4px;
+}
+.commentary-content ol { list-style-type: decimal; }
+.commentary-content ul { list-style-type: disc; }
+
+/* Grid borders on explanation tables for easy scanning. */
+.commentary-content table {
+    border-collapse: collapse !important;
+    border: 1px solid #b0b8c4 !important;
+    margin: 12px auto !important;
+    background: #fff !important;
+}
+.commentary-content table td,
+.commentary-content table th {
+    border: 1px solid #b0b8c4 !important;
+    padding: 8px 14px !important;
+    vertical-align: top !important;
+    text-align: left;
+}
+.commentary-content table th,
+.commentary-content table tr:first-child td {
+    background: #eef3f8 !important;
+    font-weight: 700;
+}
+.commentary-content table tr:first-child td[colspan],
+.commentary-content table tr:first-child th[colspan] {
+    text-align: center;
+}
+
+/* UWorld inline tables use <table cellpadding="0">; give cells padding so
+   "O2SatHtWtBMI" doesn't collapse together. */
+.question-stem table,
+.commentary-content table {
+    border-collapse: collapse;
+}
+.question-stem table td,
+.question-stem table th {
+    padding: 6px 14px;
+    vertical-align: top;
+}
+
+</style>
+
+</head>
+<body>
+
+  <!-- === Medicine Academy Splash Overlay (3s) === -->
+  <div id="ma-splash-overlay">
+    <div class="ma-splash-container">
+      <div class="ma-splash-box">
+        <!-- change logo path if needed -->
+        <img src="Data/medicine-logo-splash.png" alt="Medicine Academy Logo">
+        <div class="ma-splash-title">Medicine Academy</div>
+        <div class="ma-splash-subtitle">Advanced Medical Education</div>
+        <div class="ma-splash-loading"></div>
+        <div class="ma-splash-footer">Loading exam engine...</div>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+        <!-- Hidden brand stub required by the integrity check. -->
+        <div class="topbar" style="display:none !important;" aria-hidden="true">
+            <div class="brand">
+                <img src="Data/medicine-logo.png" alt="" />
+                <div class="title">Medicine Academy</div>
+            </div>
+        </div>
+
+        <div class="header">
+            <div class="uworld-logo-wrap uworld-logo-anim">
+            <img src="Data/bv.png" alt="Uworld Logo" class="uworld-logo-img"></div>
+            <h4>UWorld USMLE Step 1 QBank 2025</h4>
+        </div>
+
+        <div id="main-menu" class="content-section active">
+            <div class="content">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                    <h2 style="margin:0; color: var(--primary);">Choose Your Learning Path</h2>
+                    <button class="toggle-btn" id="dark-toggle">☀️ Light Mode</button>
+                </div>
+                <div class="main-menu">
+                    <div class="menu-card" id="learning-mode-menu">
+                        <div class="icon">📖</div>
+                        <h2>Learning Mode</h2>
+                    </div>
+                    <div class="menu-card" id="exam-mode-menu">
+                        <div class="icon">⏱️</div>
+                        <h2>Exam Mode</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="learning-mode" class="content-section">
+            <div class="content">
+                <button class="btn btn-primary" id="back-from-learning" style="margin-bottom:20px">← Back</button>
+                <h2 style="margin-bottom: 20px; color: var(--primary);">Select a Category</h2>
+                <div class="loading" id="learning-loading">
+                    <div class="spinner"></div>
+                    <p>Loading categories...</p>
+                </div>
+                <div id="learning-categories-tree" style="display: none;"></div>
+                <div id="learning-questions" class="learning-mode" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div id="exam-mode" class="content-section">
+            <div class="content">
+                <button class="btn btn-primary" id="back-from-exam" style="margin-bottom:20px">← Back</button>
+                <h2 style="margin-bottom: 20px; color: var(--primary);">Exam Setup</h2>
+                
+                <div id="exam-setup">
+                    <div class="exam-setup">
+                        <h3>Step 1: Select Topics</h3>
+                        <button class="btn btn-primary" id="select-all-btn" style="margin-top:10px">Select All Topics</button>
+                        <div id="exam-categories" style="margin-top:16px;"></div>
+                        <div class="selected-info" id="selected-info" style="display: none;">
+                            <strong>Selected Topics:</strong> <span id="selected-count">0</span> topics, 
+                            <span id="total-questions">0</span> total questions available
+                        </div>
+                    </div>
+
+                    <div class="exam-setup">
+                        <h3>Step 2: Configure Exam</h3>
+                        <div class="exam-controls">
+                            <div class="control-group">
+                                <label>Number of Questions (max 100):</label>
+                                <input type="number" id="num-questions" min="1" max="100" value="10">
+                            </div>
+                            <div class="control-group">
+                                <label>Total Time (minutes):</label>
+                                <input type="number" id="total-time" min="1" max="300" value="10">
+                                <small style="color: var(--muted);">Auto-calculated: 1 minute per question (editable)</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="start-exam-btn" style="margin-top:20px">Start Exam</button>
+                    </div>
+                </div>
+
+                <div id="exam-questions" class="exam-mode" style="display: none;"></div>
+                <div id="exam-results" class="exam-results" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer with random message removed by request -->
+
+	<div class="modal" id="media-modal">
+		<span class="modal-close" id="modal-close">&times;</span>
+		<div class="modal-content" id="modal-content"></div>
+	</div>
+
+	<div class="time-up-modal" id="time-up-modal">
+		<div class="time-up-content">
+			<h2>⏰ Time's Up!</h2>
+			<p>The exam time has expired. Click below to view your results.</p>
+			<button id="view-results-btn">View Results</button>
+		</div>
+	</div>
+
+    
+
+    <script src="embedded-assets.js"></script>
+    <script src="js/sql-wasm.js"></script>
+
+    <script>
+        let SQL = null;
+        let databases = {};
+        let currentDatabase = null;
+        let currentDatabasePath = '';
+        let currentMode = null;
+        let selectedCategories = new Set();
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer = null;
+        let totalTimeRemaining = 0;
+        let examSettings = {};
+        let examTimeExpired = false;
+        let learningAnswered = false;
+        let categoriesStructure = [];
+
+        function isDirectFileLaunch() {
+            return window.location.protocol === 'file:';
+        }
+
+        function showStartupError(message) {
+            const splash = document.getElementById('ma-splash-overlay');
+            if (!splash) return;
+
+            const box = splash.querySelector('.ma-splash-box');
+            if (!box) return;
+
+            box.innerHTML = `
+                <img src="Data/medicine-logo-splash.png" alt="Medicine Academy">
+                <div class="ma-splash-title">Medicine Academy</div>
+                <div class="ma-splash-subtitle">${message}</div>
+                <div class="ma-splash-footer">Try opening this folder with a local server if the problem continues.</div>
+            `;
+        }
+
+        document.getElementById('dark-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('dark-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
+
+        async function initSQL() {
+            if (SQL) return;
+
+            try {
+                const sqlConfig = {
+                    locateFile: file => `js/${file}`
+                };
+
+                if (isDirectFileLaunch() && window.QBANK_LOCAL_ASSETS) {
+                    sqlConfig.wasmBinary = window.QBANK_LOCAL_ASSETS.getWasmBinary();
+                }
+
+                SQL = await initSqlJs(sqlConfig);
+            } catch (error) {
+                console.error('Failed to initialize SQL.js:', error);
+                showStartupError('Could not load the local question engine.');
+                throw error;
+            }
+        }
+
+        async function loadCategoriesStructure() {
+            try {
+                if (isDirectFileLaunch() && window.QBANK_LOCAL_ASSETS && window.QBANK_LOCAL_ASSETS.categories) {
+                    categoriesStructure = window.QBANK_LOCAL_ASSETS.categories.categories || [];
+                    return;
+                }
+
+                const response = await fetch('Data/categories.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    categoriesStructure = data.categories || [];
+                } else {
+                    throw new Error('categories.json not found');
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                alert('Error loading categories. Please ensure Data/categories.json exists.');
+                categoriesStructure = [];
+            }
+        }
+
+        async function loadDatabaseForPath(path) {
+            const cacheKey = path;
+            if (databases[cacheKey]) {
+                currentDatabase = databases[cacheKey];
+                currentDatabasePath = path;
+                return true;
+            }
+            
+            try {
+                await initSQL();
+                const dbPath = `Data/${path}/data.db`;
+                let databaseBytes = null;
+
+                if (isDirectFileLaunch() && window.QBANK_LOCAL_ASSETS) {
+                    databaseBytes = window.QBANK_LOCAL_ASSETS.getDatabaseBinary(path);
+                }
+
+                if (!databaseBytes) {
+                    const response = await fetch(dbPath);
+                    if (!response.ok) {
+                        throw new Error(`Database not found at ${dbPath}`);
+                    }
+                    const buffer = await response.arrayBuffer();
+                    databaseBytes = new Uint8Array(buffer);
+                }
+
+                const db = new SQL.Database(databaseBytes);
+                databases[cacheKey] = db;
+                currentDatabase = db;
+                currentDatabasePath = path;
+                return true;
+            } catch (error) {
+                console.error(`Error loading database for ${path}:`, error);
+                return false;
+            }
+        }
+
+        function buildCategoryPath(pathArray) {
+            return pathArray.join('/');
+        }
+
+        document.getElementById('learning-mode-menu').addEventListener('click', async () => {
+            showSection('learning-mode');
+            await loadLearningCategories();
+        });
+
+        document.getElementById('exam-mode-menu').addEventListener('click', async () => {
+            showSection('exam-mode');
+            await loadExamCategories();
+        });
+
+        document.getElementById('back-from-learning').addEventListener('click', () => {
+            if (typeof uwClearSessionData === 'function') uwClearSessionData();
+            currentDatabasePath = '';
+            currentDatabase = null;
+            showSection('main-menu');
+        });
+
+        document.getElementById('back-from-exam').addEventListener('click', () => {
+            if (typeof uwClearSessionData === 'function') uwClearSessionData();
+            resetExamMode();
+            showSection('main-menu');
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetExamMode() {
+            if (examTimer) {
+                clearInterval(examTimer);
+                examTimer = null;
+            }
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            selectedCategories.clear();
+            examTimeExpired = false;
+            currentDatabase = null;
+            currentDatabasePath = '';
+            document.getElementById('exam-setup').style.display = 'block';
+            document.getElementById('exam-questions').style.display = 'none';
+            document.getElementById('exam-results').style.display = 'none';
+        }
+		async function buildCategoryTreeStructure(structure, currentPath = []) {
+			let paths = [];
+			
+			for (const item of structure) {
+				if (typeof item === 'object' && !Array.isArray(item)) {
+					for (const [key, value] of Object.entries(item)) {
+						const newPath = [...currentPath, key];
+						const dbPath = buildCategoryPath(newPath);
+						
+						paths.push({
+							path: dbPath,
+							name: key,
+							fullPath: newPath,
+							hasChildren: true,
+							type: 'category',
+							childrenLoaded: false, 
+							children: []
+						});
+					}
+				}
+			}
+			
+			return paths;
+		}
+
+        async function loadCategoryChildren(categoryItem) {
+            if (categoryItem.childrenLoaded && categoryItem.children && categoryItem.children.length > 0) {
+                return categoryItem.children;
+            }
+            
+            const loaded = await loadDatabaseForPath(categoryItem.path);
+            if (!loaded) {
+                categoryItem.childrenLoaded = true;
+                categoryItem.children = [];
+                return [];
+            }
+            
+            // First group by subjects, then list systems under each subject
+            const subjectsQuery = `
+                SELECT DISTINCT s.id, s.name, COUNT(q.id) AS count
+                FROM Subjects s
+                INNER JOIN Questions q ON q.subId = s.id
+                GROUP BY s.id, s.name
+                ORDER BY s.name
+            `;
+            const subjectsResult = currentDatabase.exec(subjectsQuery);
+            
+            let children = [];
+            
+            if (subjectsResult.length > 0 && subjectsResult[0].values.length > 0) {
+                subjectsResult[0].values.forEach(subRow => {
+                    const [subId, subName, subCount] = subRow;
+                    const subjectTotalCount = parseInt(subCount) || 0;
+                    
+                    // For each subject, find systems that contain questions for this subject
+                    const systemsForSubjectQuery = `
+                        SELECT DISTINCT sys.id, sys.name, COUNT(q.id) AS count
+                        FROM Systems sys
+                        INNER JOIN Questions q ON q.sysId = sys.id
+                        WHERE q.subId = ${subId}
+                        GROUP BY sys.id, sys.name
+                        ORDER BY sys.name
+                    `;
+                    const systemsForSubjectResult = currentDatabase.exec(systemsForSubjectQuery);
+                    
+                    let systemChildren = [];
+                    
+                    if (systemsForSubjectResult.length > 0 && systemsForSubjectResult[0].values.length > 0) {
+                        systemsForSubjectResult[0].values.forEach(sysRow => {
+                            const [sysId, sysName, sysCount] = sysRow;
+                            const questionCount = parseInt(sysCount) || 0;
+                            if (questionCount > 0) {
+                                // Leaf node: subject + system pair
+                                systemChildren.push({
+                                    path: categoryItem.path,
+                                    name: sysName,
+                                    fullPath: categoryItem.fullPath,
+                                    hasChildren: false,
+                                    type: 'subject',
+                                    id: subId,
+                                    systemId: sysId,
+                                    count: questionCount,
+                                    childrenLoaded: true,
+                                    children: []
+                                });
+                            }
+                        });
+                    }
+                    
+                    if (systemChildren.length > 0 || subjectTotalCount > 0) {
+                        children.push({
+                            path: categoryItem.path,
+                            name: subName,
+                            fullPath: categoryItem.fullPath,
+                            hasChildren: systemChildren.length > 0,
+                            type: 'subject',
+                            id: subId,
+                            count: subjectTotalCount,
+                            children: systemChildren,
+                            childrenLoaded: true
+                        });
+                    }
+                });
+            }
+            
+            categoryItem.children = children;
+            categoryItem.childrenLoaded = true;
+            
+            return children;
+        }
+
+
+		async function loadLearningCategories() {
+			document.getElementById('learning-loading').style.display = 'block';
+			document.getElementById('learning-categories-tree').style.display = 'none';
+			document.getElementById('learning-questions').style.display = 'none';
+			
+			await loadCategoriesStructure();
+			
+			const paths = await buildCategoryTreeStructure(categoriesStructure);
+			
+			const container = document.getElementById('learning-categories-tree');
+			container.innerHTML = '';
+			
+			if (paths.length === 0) {
+				document.getElementById('learning-loading').innerHTML = '<p>No categories found</p>';
+				return;
+			}
+			
+			await renderLearningTree(paths, container);
+			
+			document.getElementById('learning-loading').style.display = 'none';
+			document.getElementById('learning-categories-tree').style.display = 'block';
+		}
+
+
+		async function renderLearningTree(items, container, level = 0) {
+			for (const item of items) {
+				const nodeDiv = document.createElement('div');
+				nodeDiv.className = 'tree-node';
+				nodeDiv.style.marginLeft = `${level * 20}px`;
+				
+				const labelDiv = document.createElement('div');
+				labelDiv.className = 'tree-label';
+				
+				if (item.hasChildren) {
+					const toggleSpan = document.createElement('span');
+					toggleSpan.className = 'tree-toggle';
+					toggleSpan.textContent = '▶';
+					labelDiv.appendChild(toggleSpan);
+					
+					const textSpan = document.createElement('span');
+					textSpan.className = 'tree-text';
+					textSpan.textContent = item.name;
+					labelDiv.appendChild(textSpan);
+					
+					if (item.type === 'system' && item.count > 0) {
+						const countSpan = document.createElement('span');
+						countSpan.className = 'tree-count';
+						countSpan.textContent = `${item.count} questions`;
+						labelDiv.appendChild(countSpan);
+					}
+					
+					const childrenDiv = document.createElement('div');
+					childrenDiv.className = 'tree-children';
+					
+					labelDiv.addEventListener('click', async (e) => {
+						if (e.target === toggleSpan || e.target === textSpan) {
+							const isExpanded = childrenDiv.classList.contains('expanded');
+							
+							if (!isExpanded) {
+								if (!item.childrenLoaded) {
+									const loadingDiv = document.createElement('div');
+									loadingDiv.className = 'loading-inline';
+									loadingDiv.innerHTML = '<div class="spinner-small"></div><span>Loading...</span>';
+									childrenDiv.appendChild(loadingDiv);
+								}
+								
+								childrenDiv.classList.add('expanded');
+								toggleSpan.textContent = '▼';
+								
+								if (!item.childrenLoaded) {
+									const children = await loadCategoryChildren(item);
+									childrenDiv.innerHTML = ''; 
+									await renderLearningTree(children, childrenDiv, level + 1);
+								}
+							} else {
+								childrenDiv.classList.remove('expanded');
+								toggleSpan.textContent = '▶';
+							}
+						} else if (item.type === 'system') {
+							const loaded = await loadDatabaseForPath(item.path);
+							if (loaded) {
+								loadLearningQuestions(item.id, 'system');
+							}
+						}
+					});
+					
+					nodeDiv.appendChild(labelDiv);
+					
+					if (item.childrenLoaded && item.children.length > 0) {
+						await renderLearningTree(item.children, childrenDiv, level + 1);
+					}
+					
+					nodeDiv.appendChild(childrenDiv);
+				} else {
+					const textSpan = document.createElement('span');
+					textSpan.className = 'tree-text';
+					textSpan.textContent = item.name;
+					labelDiv.appendChild(textSpan);
+					
+					const countSpan = document.createElement('span');
+					countSpan.className = 'tree-count';
+					countSpan.textContent = `${item.count} questions`;
+					labelDiv.appendChild(countSpan);
+					
+					labelDiv.style.cursor = 'pointer';
+					
+					if (item.type === 'subject') {
+						labelDiv.addEventListener('click', async () => {
+							await loadDatabaseForPath(item.path);
+							loadLearningQuestions(item.id, 'subject', item.systemId);
+						});
+					}
+					
+					nodeDiv.appendChild(labelDiv);
+				}
+				
+				container.appendChild(nodeDiv);
+			}
+		}
+
+		function loadLearningQuestions(categoryId, categoryType, systemId = null) {
+			let query;
+			if (categoryType === 'subject' && systemId) {
+				query = `SELECT id FROM Questions WHERE subId = ${categoryId} AND sysId = ${systemId} ORDER BY id`;
+			} else if (categoryType === 'system') {
+				query = `SELECT id FROM Questions WHERE sysId = ${categoryId} ORDER BY id`;
+			}
+			
+			const result = currentDatabase.exec(query);
+			
+			if (result.length > 0 && result[0].values.length > 0) {
+				currentQuestions = result[0].values.map(row => ({
+					id: row[0],
+					dbPath: currentDatabasePath
+				}));
+				currentQuestionIndex = 0;
+				userAnswers = {};
+				learningAnswered = false;
+				currentMode = 'learning';
+				
+				document.getElementById('learning-categories-tree').style.display = 'none';
+				document.getElementById('learning-questions').style.display = 'block';
+				
+				displayLearningQuestion();
+			}
+		}
+
+        async function displayLearningQuestion() {
+            const questionObj = currentQuestions[currentQuestionIndex];
+            await loadDatabaseForPath(questionObj.dbPath);
+            const questionData = getQuestionData(questionObj.id);
+            learningAnswered = false;
+            
+            let html = `
+                <div class="progress-section">
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress-fill" style="width: ${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%"></div>
+                    </div>
+                    <div class="progress-tooltip" id="progress-tooltip"></div>
+                    <div class="progress-info">
+                        <span>Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</span>
+                        <span>${Math.round(((currentQuestionIndex + 1) / currentQuestions.length) * 100)}%</span>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
+                    
+                    <div class="answer-options">
+                        ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, false, false)}
+                    </div>
+                    
+                    <div class="commentary" id="commentary-${questionObj.id}">
+                        <h4>Explanation:</h4>
+                        <div class="commentary-content">${generateMediaHTML(stripStyles(questionData.explanation || 'No explanation available.'))}</div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev-learning-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''}>⏮ Previous</button>
+                    <button id="back-to-categories-btn" class="center-btn">Back to Topics</button>
+                    <button id="next-learning-btn" ${currentQuestionIndex === currentQuestions.length - 1 ? 'disabled' : ''}>Next ⏭</button>
+                </div>
+            `;
+            
+            document.getElementById('learning-questions').innerHTML = html;
+                        window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
+
+            
+            setupProgressBar();
+            
+            questionData.answers.forEach((answer) => {
+                const optionEl = document.querySelector(`.answer-option[data-option-id="${answer.answerID}"]`);
+                if (optionEl) {
+                    optionEl.addEventListener('click', () => selectLearningAnswer(questionObj.id, answer.answerID, answer.isCorrect, questionData.answers));
+                }
+            });
+            
+            if (currentQuestionIndex > 0) {
+                document.getElementById('prev-learning-btn').addEventListener('click', previousLearningQuestion);
+            }
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                document.getElementById('next-learning-btn').addEventListener('click', nextLearningQuestion);
+            }
+            
+            document.getElementById('back-to-categories-btn').addEventListener('click', () => {
+                document.getElementById('learning-questions').style.display = 'none';
+                document.getElementById('learning-categories-tree').style.display = 'block';
+            });
+        }
+
+        function setupProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const tooltip = document.getElementById('progress-tooltip');
+            
+            if (!progressBar || !tooltip) return;
+            
+            progressBar.addEventListener('mousemove', (e) => {
+                const rect = progressBar.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percent = x / rect.width;
+                const questionNum = Math.ceil(percent * currentQuestions.length);
+                
+                tooltip.textContent = `Question ${questionNum}`;
+                tooltip.style.left = `${x}px`;
+                tooltip.classList.add('show');
+            });
+            
+            progressBar.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+            
+            progressBar.addEventListener('click', async (e) => {
+                if (examTimeExpired) return;
+                const rect = progressBar.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percent = x / rect.width;
+                const targetIndex = Math.floor(percent * currentQuestions.length);
+                if (targetIndex >= 0 && targetIndex < currentQuestions.length) {
+                    currentQuestionIndex = targetIndex;
+                    if (currentMode === 'learning') {
+                        await displayLearningQuestion();
+                    } else if (currentMode === 'exam') {
+                        await displayExamQuestion();
+                    }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        function selectLearningAnswer(questionId, selectedId, isCorrect, allAnswers) {
+            if (learningAnswered) return;
+            learningAnswered = true;
+            
+            document.getElementById(`commentary-${questionId}`).classList.add('show');
+            
+            allAnswers.forEach((answer) => {
+                const optionEl = document.querySelector(`.answer-option[data-option-id="${answer.answerID}"]`);
+                if (answer.isCorrect) {
+                    optionEl.classList.add('correct');
+                }
+                if (selectedId === answer.answerID && !answer.isCorrect) {
+                    optionEl.classList.add('incorrect');
+                }
+            });
+        }
+
+        async function previousLearningQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                await displayLearningQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function nextLearningQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                await displayLearningQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+/* ================================
+   EXAM MODE – TREE + SELECTION
+================================ */
+
+async function loadExamCategories() {
+    await loadCategoriesStructure();
+
+    const paths = await buildCategoryTreeStructure(categoriesStructure);
+
+    const container = document.getElementById('exam-categories');
+    container.innerHTML = '';
+    selectedCategories.clear();
+
+    const treeDiv = document.createElement('div');
+    treeDiv.className = 'tree-view';
+
+    await renderExamTree(paths, treeDiv);
+    container.appendChild(treeDiv);
+
+    updateSelectedInfo();
+}
+
+async function renderExamTree(items, container, level = 0) {
+    for (const item of items) {
+        const nodeDiv = document.createElement('div');
+        nodeDiv.className = 'tree-node';
+        nodeDiv.style.marginLeft = `${level * 20}px`;
+
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'tree-label';
+
+        // Parent nodes (categories or systems that have children)
+        if (item.hasChildren) {
+            let checkbox = null;
+
+            // Allow selecting whole systems as a topic
+            if (item.type === 'system') {
+                checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'tree-checkbox';
+
+                const categoryType = 'system';
+                const categoryDbId = item.id;
+                const systemId = item.id;
+                const subjectId = '';
+
+                const categoryId = `${item.path}|||${categoryType}|||${categoryDbId}|||${systemId}`;
+
+                checkbox.dataset.categoryId = categoryId;
+                checkbox.dataset.categoryType = categoryType;
+                checkbox.dataset.categoryDbId = categoryDbId;
+                checkbox.dataset.systemId = systemId;
+                checkbox.dataset.subjectId = subjectId;
+                checkbox.dataset.dbPath = item.path;
+                checkbox.dataset.count = item.count || 0;
+
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        selectedCategories.add(categoryId);
+                    } else {
+                        selectedCategories.delete(categoryId);
+                    }
+                    updateSelectedInfo();
+                });
+
+                labelDiv.appendChild(checkbox);
+            }
+
+            const toggleSpan = document.createElement('span');
+            toggleSpan.className = 'tree-toggle';
+            toggleSpan.textContent = '▶';
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'tree-text';
+            textSpan.textContent = item.name;
+
+            labelDiv.appendChild(toggleSpan);
+            labelDiv.appendChild(textSpan);
+
+            if (typeof item.count === 'number' && item.count > 0) {
+                const countSpan = document.createElement('span');
+                countSpan.className = 'tree-count';
+                countSpan.textContent = `${item.count} questions`;
+                labelDiv.appendChild(countSpan);
+            }
+
+            const childrenDiv = document.createElement('div');
+            childrenDiv.className = 'tree-children';
+
+            // Expand / collapse on toggle or text click (not on checkbox)
+            labelDiv.addEventListener('click', async (e) => {
+                if (e.target === checkbox) {
+                    return;
+                }
+
+                e.stopPropagation();
+
+                const expanded = childrenDiv.classList.contains('expanded');
+
+                if (!expanded) {
+                    childrenDiv.classList.add('expanded');
+                    toggleSpan.textContent = '▼';
+
+                    if (!item.childrenLoaded) {
+                        const children = await loadCategoryChildren(item);
+                        childrenDiv.innerHTML = '';
+                        await renderExamTree(children, childrenDiv, level + 1);
+                        item.children = children;
+                        item.childrenLoaded = true;
+                    } else if (childrenDiv.childElementCount === 0 && item.children) {
+                        await renderExamTree(item.children, childrenDiv, level + 1);
+                    }
+                } else {
+                    childrenDiv.classList.remove('expanded');
+                    toggleSpan.textContent = '▶';
+                }
+            });
+
+            nodeDiv.appendChild(labelDiv);
+            nodeDiv.appendChild(childrenDiv);
+        } else {
+            // Leaf nodes (subjects or systems without children)
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'tree-checkbox';
+
+            let categoryType;
+            let categoryDbId = item.id;
+            let systemId = null;
+            let subjectId = null;
+
+            if (item.type === 'subject') {
+                categoryType = 'subject';
+                systemId = item.systemId;
+                subjectId = item.id;
+            } else {
+                categoryType = 'system';
+                systemId = item.id;
+            }
+
+            const categoryId = `${item.path}|||${categoryType}|||${categoryDbId}|||${systemId ?? ''}`;
+
+            checkbox.dataset.categoryId = categoryId;
+            checkbox.dataset.categoryType = categoryType;
+            checkbox.dataset.categoryDbId = categoryDbId;
+            checkbox.dataset.systemId = systemId ?? '';
+            checkbox.dataset.subjectId = subjectId ?? '';
+            checkbox.dataset.dbPath = item.path;
+            checkbox.dataset.count = item.count || 0;
+
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    selectedCategories.add(categoryId);
+                } else {
+                    selectedCategories.delete(categoryId);
+                }
+                updateSelectedInfo();
+            });
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'tree-text';
+            textSpan.textContent = item.name;
+
+            const countSpan = document.createElement('span');
+            countSpan.className = 'tree-count';
+            countSpan.textContent = `${item.count} questions`;
+
+            labelDiv.appendChild(checkbox);
+            labelDiv.appendChild(textSpan);
+            labelDiv.appendChild(countSpan);
+
+            nodeDiv.appendChild(labelDiv);
+        }
+
+        container.appendChild(nodeDiv);
+    }
+}
+
+/* ================================
+   SELECT ALL TOPICS
+================================ */
+
+document.getElementById('select-all-btn').addEventListener('click', () => {
+    const btn = document.getElementById('select-all-btn');
+    const allCheckboxes = document.querySelectorAll('.tree-checkbox');
+    const allChecked = allCheckboxes.length > 0 && Array.from(allCheckboxes).every(cb => cb.checked);
+
+    if (allChecked) {
+        allCheckboxes.forEach(cb => {
+            cb.checked = false;
+            selectedCategories.delete(cb.dataset.categoryId);
+        });
+        btn.textContent = 'Select All Topics';
+    } else {
+        allCheckboxes.forEach(cb => {
+            cb.checked = true;
+            selectedCategories.add(cb.dataset.categoryId);
+        });
+        btn.textContent = 'Deselect All Topics';
+    }
+
+    updateSelectedInfo();
+});
+
+/* ================================
+   COUNTERS (Selected Topics + Questions)
+================================ */
+
+function updateSelectedInfo() {
+    const infoDiv = document.getElementById('selected-info');
+
+    const checkedBoxes = document.querySelectorAll('.tree-checkbox:checked');
+
+    if (checkedBoxes.length === 0) {
+        infoDiv.style.display = 'none';
+        return;
+    }
+
+    let totalQuestions = 0;
+    const topicKeys = new Set();
+
+    checkedBoxes.forEach(cb => {
+        const categoryType = cb.dataset.categoryType;
+        const categoryDbId = cb.dataset.categoryDbId;
+        const systemId = cb.dataset.systemId || '';
+        const count = parseInt(cb.dataset.count) || 0;
+
+        totalQuestions += count;
+
+        let key;
+        if (categoryType === 'subject') {
+            key = `sub-${categoryDbId}-sys-${systemId}`;
+        } else {
+            key = `sys-${categoryDbId}`;
+        }
+        topicKeys.add(key);
+    });
+
+    document.getElementById('selected-count').textContent = topicKeys.size;
+    document.getElementById('total-questions').textContent = totalQuestions;
+    infoDiv.style.display = 'block';
+}
+
+
+
+
+        document.getElementById('num-questions').addEventListener('input', () => {
+            const numQuestions = parseInt(document.getElementById('num-questions').value) || 0;
+            document.getElementById('total-time').value = numQuestions;
+        });
+
+        document.getElementById('start-exam-btn').addEventListener('click', async () => {
+            if (selectedCategories.size === 0) {
+                alert('Please select at least one topic');
+                return;
+            }
+
+            const numQuestions = parseInt(document.getElementById('num-questions').value);
+            const totalTime = parseInt(document.getElementById('total-time').value);
+
+            if (!numQuestions || numQuestions < 1 || numQuestions > 100) {
+                alert('Please enter a valid number of questions (1-100)');
+                return;
+            }
+
+            examSettings = {
+    numQuestions,
+    totalTime: totalTime * 60,
+    startedAt: Date.now()
+};
+
+
+            currentQuestions = [];
+            
+		for (const categoryId of selectedCategories) {
+			const checkbox = document.querySelector(`.tree-checkbox[data-category-id="${categoryId}"]`);
+			if (!checkbox) continue;
+			
+			const dbPath = checkbox.dataset.dbPath;
+			const categoryType = checkbox.dataset.categoryType;
+			const categoryDbId = checkbox.dataset.categoryDbId;
+			const systemId = checkbox.dataset.systemId;
+			
+			await loadDatabaseForPath(dbPath);
+			
+			let query;
+			if (categoryType === 'subject' && systemId) {
+				query = `SELECT id FROM Questions WHERE subId = ${categoryDbId} AND sysId = ${systemId} ORDER BY RANDOM()`;
+			} else if (categoryType === 'system') {
+				query = `SELECT id FROM Questions WHERE sysId = ${categoryDbId} ORDER BY RANDOM()`;
+			}
+			
+			const result = currentDatabase.exec(query);
+			
+			if (result.length > 0 && result[0].values.length > 0) {
+				const categoryQuestions = result[0].values.map(row => ({
+					id: row[0],
+					dbPath: dbPath,
+					categoryType: categoryType,
+					categoryId: categoryDbId,
+					systemId: systemId || null
+				}));
+				currentQuestions.push(...categoryQuestions);
+			}
+		}
+            
+            if (currentQuestions.length === 0) {
+                alert('No questions available for selected topics');
+                return;
+            }
+            
+            currentQuestions.sort(() => Math.random() - 0.5);
+            currentQuestions = currentQuestions.slice(0, numQuestions);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            examTimeExpired = false;
+            currentMode = 'exam';
+            
+            document.getElementById('exam-setup').style.display = 'none';
+            document.getElementById('exam-questions').style.display = 'block';
+            
+            startExamTimer();
+            await displayExamQuestion();
+        });
+
+        function startExamTimer() {
+            if (examTimer) clearInterval(examTimer);
+            
+            totalTimeRemaining = examSettings.totalTime;
+            
+            examTimer = setInterval(() => {
+                totalTimeRemaining--;
+                updateTimerDisplay();
+                
+                if (totalTimeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    examTimeExpired = true;
+                    showTimeUpModal();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer');
+            if (!timerEl) return;
+            
+            const minutes = Math.floor(totalTimeRemaining / 60);
+            const seconds = totalTimeRemaining % 60;
+            timerEl.textContent = `⏱ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            timerEl.classList.remove('warning', 'critical');
+            if (totalTimeRemaining <= 60) {
+                timerEl.classList.add('critical');
+            } else if (totalTimeRemaining <= 300) {
+                timerEl.classList.add('warning');
+            }
+        }
+
+        function showTimeUpModal() {
+            document.getElementById('time-up-modal').classList.add('show');
+        }
+
+        document.getElementById('view-results-btn').addEventListener('click', showExamResults);
+
+        async function displayExamQuestion() {
+            const questionObj = currentQuestions[currentQuestionIndex];
+            await loadDatabaseForPath(questionObj.dbPath);
+            
+            const questionData = getQuestionData(questionObj.id);
+            const isLast = currentQuestionIndex === currentQuestions.length - 1;
+            
+            let html = `
+                <div class="progress-section">
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress-fill" style="width: ${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%"></div>
+                    </div>
+                    <div class="progress-tooltip" id="progress-tooltip"></div>
+                    <div class="progress-info">
+                        <span>Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</span>
+                        <span>${Math.round(((currentQuestionIndex + 1) / currentQuestions.length) * 100)}%</span>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <div class="question-header">
+                        <div class="question-number">Question ${currentQuestionIndex + 1}</div>
+                        <div class="timer" id="timer">⏱ Loading...</div>
+                    </div>
+                    
+                    <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
+                    
+                    <div class="answer-options">
+                        ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, true, examTimeExpired)}
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev-exam-btn" ${currentQuestionIndex === 0 || examTimeExpired ? 'disabled' : ''}>⏮ Previous</button>
+                    <button id="finish-exam-btn" class="center-btn">Finish Exam</button>
+                    <button id="next-exam-btn" ${examTimeExpired || isLast ? 'disabled' : ''}>Next ⏭</button>
+                </div>
+            `;
+            
+            document.getElementById('exam-questions').innerHTML = html;
+
+            window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_exam_' + questionObj.id;
+
+            
+            updateTimerDisplay();
+            setupProgressBar();
+            
+			if (!examTimeExpired) {
+				const allOptions = document.querySelectorAll('.answer-option');
+				allOptions.forEach((optionEl) => {
+					const answerId = parseInt(optionEl.getAttribute('data-option-id'));
+					const answerData = questionData.answers.find(a => a.answerID === answerId);
+					if (answerData) {
+						optionEl.style.cursor = 'pointer';
+						optionEl.addEventListener('click', function() {
+							selectExamAnswer(questionObj.id, answerData.answerID, answerData.isCorrect);
+						});
+					}
+				});
+                
+                if (currentQuestionIndex > 0) {
+                    const prevBtn = document.getElementById('prev-exam-btn');
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', previousExamQuestion);
+                    }
+                }
+                
+                const finishBtn = document.getElementById('finish-exam-btn');
+                if (finishBtn) {
+                    finishBtn.addEventListener('click', showExamResults);
+                }
+                
+                if (!isLast) {
+                    const nextBtn = document.getElementById('next-exam-btn');
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', nextExamQuestion);
+                    }
+                }
+            }
+        }
+
+		function selectExamAnswer(qId, answerId, isCorrect) {
+			if (examTimeExpired) return;
+			
+			console.log('Answer selected:', qId, answerId, isCorrect);
+			
+			userAnswers[qId] = { answerId, isCorrect };
+			
+			const options = document.querySelectorAll('.answer-option');
+			options.forEach(opt => opt.classList.remove('selected'));
+			
+			options.forEach(opt => {
+				if (parseInt(opt.getAttribute('data-option-id')) === answerId) {
+					opt.classList.add('selected');
+				}
+			});
+		}
+        async function previousExamQuestion() {
+            if (currentQuestionIndex > 0 && !examTimeExpired) {
+                currentQuestionIndex--;
+                await displayExamQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function nextExamQuestion() {
+            if (examTimeExpired) return;
+            
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                await displayExamQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+       async function showExamResults() {
+    if (examTimer) clearInterval(examTimer);
+
+    document.getElementById('exam-questions').style.display = 'none';
+    document.getElementById('exam-results').style.display = 'block';
+    document.getElementById('time-up-modal').classList.remove('show');
+
+    let correct = 0, incorrect = 0, unanswered = 0;
+
+    currentQuestions.forEach(qObj => {
+        if (userAnswers[qObj.id]) {
+            if (userAnswers[qObj.id].isCorrect) correct++;
+            else incorrect++;
+        } else {
+            unanswered++;
+        }
+    });
+
+    const total = currentQuestions.length || 0;
+    const answered = correct + incorrect;
+
+    const percentCorrect   = total ? Math.round((correct   / total) * 100) : 0;
+    const percentIncorrect = total ? Math.round((incorrect / total) * 100) : 0;
+    const percentBlank     = total ? (100 - percentCorrect - percentIncorrect) : 0;
+
+    const scorePercent = percentCorrect;
+
+    // === مدت آزمون ===
+    let durationSeconds = 0;
+    if (examSettings && examSettings.startedAt) {
+        durationSeconds = Math.max(1, Math.round((Date.now() - examSettings.startedAt) / 1000));
+    } else if (examSettings && typeof totalTimeRemaining === 'number') {
+        durationSeconds = Math.max(1, examSettings.totalTime - totalTimeRemaining);
+    }
+
+    function formatDuration(sec) {
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        if (m <= 0) return `${s}s`;
+        return `${m}m ${s.toString().padStart(2, "0")}s`;
+    }
+
+    const durationText = formatDuration(durationSeconds);
+    const configuredText = examSettings && examSettings.totalTime
+        ? formatDuration(examSettings.totalTime)
+        : null;
+
+    const avgPerQuestion = total ? Math.round(durationSeconds / total) : 0;
+
+    // === پیام انگیزشی بر اساس اسکور ===
+    let perfClass = "results-message-low";
+    let perfTitle = "Keep Going!";
+    let perfBody  = "This is just the starting point. Review your incorrect answers carefully and repeat similar blocks – consistency will quickly push your score up.";
+
+    if (scorePercent >= 40 && scorePercent < 70) {
+        perfClass = "results-message-medium";
+        perfTitle = "Good Progress";
+        perfBody  = "You are on the right track. Focus on weak topics, tighten up your timing, and repeat mixed blocks to move into a higher performance band.";
+    } else if (scorePercent >= 70) {
+        perfClass = "results-message-high";
+        perfTitle = "Excellent Performance";
+        perfBody  = "You are performing at a strong level. Keep practicing full-length blocks, simulate exam-day conditions, and refine small gaps to secure a top score.";
+    }
+
+    // برای نمودار
+    const c  = percentCorrect;
+    const ic = percentIncorrect;
+    const ua = Math.max(0, 100 - c - ic);
+
+    let html = `
+        <div class="results-header">
+            <h2>Exam Completed!</h2>
+            <div class="score">${correct} / ${total}</div>
+            <div class="percentage">${scorePercent}% Overall Score</div>
+            <p style="margin-top: 12px;">
+                Correct: ${correct} | Incorrect: ${incorrect} | Unanswered: ${unanswered}
+            </p>
+            <p style="margin-top: 6px; font-size: 0.95em; opacity: 0.9;">
+                Time used: <strong>${durationText}</strong>
+                ${configuredText ? ` (of ${configuredText})` : ``}
+            </p>
+        </div>
+
+        <div class="results-message-card ${perfClass}">
+            <div class="results-message-title">${perfTitle}</div>
+            <div class="results-message-body">${perfBody}</div>
+        </div>
+
+        <div class="results-layout">
+            <div class="results-chart-card">
+                <h3>Performance Breakdown</h3>
+                <div class="results-chart-wrapper">
+                    <svg viewBox="0 0 36 36" class="results-chart">
+                        <circle class="chart-bg" cx="18" cy="18" r="16"></circle>
+                        <circle class="chart-segment correct"
+                                cx="18" cy="18" r="16"
+                                stroke-dasharray="${c} 100"></circle>
+                        <circle class="chart-segment incorrect"
+                                cx="18" cy="18" r="16"
+                                stroke-dasharray="${ic} 100"
+                                stroke-dashoffset="-${c}"></circle>
+                        <circle class="chart-segment unanswered"
+                                cx="18" cy="18" r="16"
+                                stroke-dasharray="${ua} 100"
+                                stroke-dashoffset="-${c + ic}"></circle>
+                    </svg>
+                    <div class="results-chart-center">
+                        <div class="results-chart-score">${scorePercent}%</div>
+                        <div class="results-chart-label">Score</div>
+                    </div>
+                </div>
+                <div class="results-legend">
+                    <div class="legend-item">
+                        <span class="legend-color correct"></span>
+                        <span>Correct (${percentCorrect}%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color incorrect"></span>
+                        <span>Incorrect (${percentIncorrect}%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color unanswered"></span>
+                        <span>Unanswered (${percentBlank}%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-stats-card">
+                <h3>Session Stats</h3>
+                <div class="results-stats-grid">
+                    <div class="results-stat">
+                        <div class="stat-label">Questions</div>
+                        <div class="stat-value">${total}</div>
+                        <div class="stat-sub">Answered: ${answered}</div>
+                    </div>
+                    <div class="results-stat">
+                        <div class="stat-label">Accuracy</div>
+                        <div class="stat-value">${percentCorrect}%</div>
+                        <div class="stat-sub">Based on all questions</div>
+                    </div>
+                    <div class="results-stat">
+                        <div class="stat-label">Avg Time/Q</div>
+                        <div class="stat-value">${avgPerQuestion || 0}s</div>
+                        <div class="stat-sub">Across all questions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin: 30px 0 20px 0; color: var(--primary);">Review Questions:</h3>
+        <div class="question-list" id="question-list"></div>
+
+        <div id="question-review-container"></div>
+
+        <button class="btn btn-primary" id="back-to-home-btn" style="margin-top: 30px;">Back to Home</button>
+    `;
+
+    document.getElementById('exam-results').innerHTML = html;
+
+    // دکمه‌های لیست سوالات
+    const questionList = document.getElementById('question-list');
+    currentQuestions.forEach((qObj, index) => {
+        const item = document.createElement('div');
+        item.className = 'question-item';
+
+        if (userAnswers[qObj.id]) {
+            if (userAnswers[qObj.id].isCorrect) item.classList.add('correct');
+            else item.classList.add('incorrect');
+        } else {
+            item.classList.add('unanswered');
+        }
+
+        item.textContent = `Question ${index + 1}`;
+        item.addEventListener('click', () => showQuestionReview(qObj, index));
+        questionList.appendChild(item);
+    });
+
+    document.getElementById('back-to-home-btn').addEventListener('click', () => {
+        resetExamMode();
+        showSection('main-menu');
+    });
+}
+
+
+        async function showQuestionReview(questionObj, index) {
+            await loadDatabaseForPath(questionObj.dbPath);
+            const questionData = getQuestionData(questionObj.id);
+            const userAnswer = userAnswers[questionObj.id];
+            
+            let html = `
+                <div class="question-card" style="margin-top: 30px;">
+                    <div class="question-header">
+                        <div class="question-number">Question ${index + 1} Review</div>
+                    </div>
+                    
+                    <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
+                    
+                    <div class="answer-options">
+                        ${generateReviewAnswerOptionsHTML(questionData.answers, userAnswer)}
+                    </div>
+                    
+                    <div class="commentary show">
+                        <h4>Explanation:</h4>
+                        <div class="commentary-content">${generateMediaHTML(stripStyles(questionData.explanation || 'No explanation available.'))}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('question-review-container').innerHTML = html;
+            document.getElementById('question-review-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateReviewAnswerOptionsHTML(answers, userAnswer) {
+            let html = '';
+            
+            answers.forEach((answer, index) => {
+                const letter = String.fromCharCode(65 + index);
+                let classes = 'answer-option';
+                
+                if (answer.isCorrect) classes += ' correct';
+                if (userAnswer && userAnswer.answerId === answer.answerID && !answer.isCorrect) classes += ' incorrect';
+                
+                const safeText = processImagesInHTML(stripStyles(answer.answerText || ''));
+                
+                html += `
+                    <div class="${classes}" data-option-id="${answer.answerID}">
+                        <div class="option-letter">${letter}</div>
+                        <div class="option-content">
+                            <div class="option-text">${safeText}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return html;
+        }
+
+        function getQuestionData(questionId) {
+            const data = {};
+            
+            const questionQuery = `SELECT question, explanation, corrAns FROM Questions WHERE id = ${questionId}`;
+            const questionResult = currentDatabase.exec(questionQuery);
+            if (questionResult.length > 0) {
+                data.question = questionResult[0].values[0][0] || '';
+                data.explanation = questionResult[0].values[0][1] || '';
+                data.correctAnswerId = questionResult[0].values[0][2];
+            }
+            
+            const answersQuery = `SELECT answerID, answerText FROM Answers WHERE qId = ${questionId} ORDER BY answerID`;
+            const answersResult = currentDatabase.exec(answersQuery);
+            data.answers = [];
+            if (answersResult.length > 0) {
+                answersResult[0].values.forEach(row => {
+                    data.answers.push({
+                        answerID: row[0],
+                        answerText: row[1] || '',
+                        isCorrect: row[0] === data.correctAnswerId
+                    });
+                });
+            }
+            
+            return data;
+        }
+
+		function generateAnswerOptionsHTML(answers, questionId, isExamMode, isDisabled) {
+			let html = '';
+			
+			answers.forEach((answer, index) => {
+				const letter = String.fromCharCode(65 + index);
+				let classes = 'answer-option';
+				
+				if (isDisabled) classes += ' disabled';
+				if (userAnswers[questionId] && userAnswers[questionId].answerId === answer.answerID) classes += ' selected';
+				
+				const safeText = processImagesInHTML(stripStyles(answer.answerText || ''));
+				
+				html += `
+					<div class="${classes}" data-option-id="${answer.answerID}" style="cursor: ${isDisabled ? 'not-allowed' : 'pointer'};">
+						<div class="option-letter">${letter}</div>
+						<div class="option-content">
+							<div class="option-text">${safeText}</div>
+						</div>
+					</div>
+				`;
+			});
+			
+			return html;
+		}
+
+        function stripStyles(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            temp.querySelectorAll('*').forEach(el => {
+                el.removeAttribute('style');
+                el.removeAttribute('class');
+                el.removeAttribute('bgcolor');
+                el.removeAttribute('color');
+            });
+            return temp.innerHTML;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function processImagesInHTML(html) {
+            if (!html || !currentDatabasePath) return html;
+            
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            
+            const images = temp.querySelectorAll('img');
+            images.forEach((img) => {
+                const src = img.getAttribute('src');
+                if (src && !src.startsWith('http') && !src.startsWith('Data/') && !src.startsWith('./Data/')) {
+                    const filename = src.split('/').pop().split('\\').pop();
+                    const fullPath = `./Data/${currentDatabasePath}/media/${filename}`;
+                    img.setAttribute('src', fullPath);
+                }
+                img.classList.add('option-image');
+                // NOTE: do NOT attach addEventListener here — temp.innerHTML
+                // serializes the DOM back to a string, which drops listeners.
+                // Image clicks are handled by the delegated listener below.
+            });
+            
+            return temp.innerHTML;
+        }
+
+        function generateMediaHTML(html) {
+            if (!html) return '';
+            const temp = document.createElement('div');
+            temp.innerHTML = stripStyles(html);
+            
+            const images = temp.querySelectorAll('img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && !src.startsWith('http') && !src.startsWith('Data/') && !src.startsWith('./Data/')) {
+                    const filename = src.split('/').pop().split('\\').pop();
+                    const fullPath = `./Data/${currentDatabasePath}/media/${filename}`;
+                    img.setAttribute('src', fullPath);
+                }
+                img.classList.add('option-image');
+                // NOTE: do NOT attach addEventListener here — temp.innerHTML
+                // serializes the DOM back to a string, which drops listeners.
+                // Image clicks are handled by the delegated listener below.
+            });
+            
+            return temp.innerHTML;
+        }
+
+        function openMediaModal(src, caption) {
+            const modal = document.getElementById('media-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modalContent.innerHTML = '';
+            
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'ma-image-wrapper';
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = caption || '';
+            imgWrapper.appendChild(img);
+            
+            modalContent.appendChild(imgWrapper);
+            
+            if (caption) {
+                const captionDiv = document.createElement('div');
+                captionDiv.className = 'modal-caption';
+                captionDiv.textContent = caption;
+                modalContent.appendChild(captionDiv);
+            }
+            
+            modal.classList.add('show');
+        }
+
+        document.getElementById('modal-close').addEventListener('click', () => {
+            document.getElementById('media-modal').classList.remove('show');
+        });
+
+        document.getElementById('media-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'media-modal') {
+                document.getElementById('media-modal').classList.remove('show');
+            }
+        });
+
+        // Delegated click handler for question/answer/explanation images.
+        // Re-renders wipe direct listeners, so delegation keeps clicks working.
+        document.addEventListener('click', (e) => {
+            const img = e.target.closest('img');
+            if (!img) return;
+            if (img.closest('#media-modal')) return;
+            if (!img.closest('.question-stem, .answer-option, .commentary-content, .media-item')) return;
+            const src = img.getAttribute('src') || img.src;
+            if (!src) return;
+            e.preventDefault();
+            openMediaModal(src, img.getAttribute('alt') || '');
+        });
+
+        // Allow Escape to close the media modal too.
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('media-modal');
+                if (modal && modal.classList.contains('show')) {
+                    modal.classList.remove('show');
+                }
+            }
+        });
+
+        // Clear all saved highlights + flags when leaving a quiz so the next
+        // session starts clean.  Keeps non-quiz keys (font scale etc.).
+        function uwClearSessionData() {
+            try {
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith('HL_') || key.startsWith('MA_FLAG'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+            } catch (e) {
+                console.warn('uwClearSessionData error', e);
+            }
+        }
+        window.uwClearSessionData = uwClearSessionData;
+
+        // footer message rotator removed by request
+
+        (function(){
+    const overlay = document.getElementById("ma-lock-overlay");
+    const btn = document.getElementById("ma-lock-accept");
+    if(!overlay || !btn) return;
+
+    function unlock(){
+        overlay.classList.add("ma-hide");
+        setTimeout(()=>{ overlay.style.display = "none"; }, 400);
+    }
+
+    btn.addEventListener("click", unlock);
+
+    function isLogoOk(){
+        const logo = document.querySelector("img[src*='medicine-logo']");
+        if(!logo) return false;
+        const src = (logo.getAttribute("src") || "").toLowerCase();
+        if(!src.includes("data/medicine-logo")) return false;
+
+        const w = logo.naturalWidth || logo.width;
+        const h = logo.naturalHeight || logo.height;
+        if(w < 32 || h < 32) return false;
+
+        return true;
+    }
+
+    function lockSystem(reason){
+        const mainContainer = document.querySelector(".container");
+        if(mainContainer){
+            mainContainer.innerHTML = `
+                <div style="
+                    padding:32px 20px;
+                    text-align:center;
+                    color:#e8f4ff;
+                ">
+                    <h2 style="margin-bottom:16px;font-size:24px;">System Locked</h2>
+                    <p style="margin-bottom:24px;font-size:14px;line-height:1.6;">
+                        This copy failed an integrity verification check.<br><br>
+                        Reason: ${escapeHtml(reason || "Integrity check error")}<br><br>
+                        Medicine Academy Protection System
+                    </p>
+                </div>
+            `;
+        }
+        overlay.style.display = "flex";
+        overlay.classList.remove("ma-hide");
+    }
+
+    function checkTamper(){
+        try{
+            if(!isLogoOk()){
+                lockSystem("Logo removed or replaced");
+                return;
+            }
+        }catch(e){
+            lockSystem("Integrity verification error");
+        }
+    }
+
+    window.addEventListener("load", ()=>{
+        setTimeout(checkTamper, 500);
+        setInterval(checkTamper, 10000);
+    });
+})();
+    </script>
+
+    <!-- Floating Highlight Palette -->
+<div id="highlight-palette">
+  <div class="hp-color yellow" data-color="hl-yellow"></div>
+  <div class="hp-color green" data-color="hl-green"></div>
+  <div class="hp-color blue" data-color="hl-blue"></div>
+  <span class="hp-remove" id="hp-clear">Clear</span>
+</div>
+
+<!-- Bottom Navigation Buttons removed by request -->
+
+<!-- Support Modal -->
+<div id="supportModal" class="custom-modal">
+  <div class="modal-title">Contact Options</div>
+
+  <div class="modal-item">WhatsApp: <span>+44 7403 663465</span></div>
+  <div class="modal-item">Email: <span>medicine.ac@gmail.com</span></div>
+
+  <button class="close-btn" onclick="closeModals()">Close</button>
+</div>
+
+<!-- About Modal -->
+<div id="aboutModal" class="custom-modal">
+  <div class="modal-title">Medicine Academy</div>
+
+  <div class="modal-item">Premium Medical Education Platform</div>
+  <div class="modal-item">Courses • QBanks • Board Reviews</div>
+  <div class="modal-item">Empowering physicians worldwide</div>
+  <div class="modal-item">medicine.ac</div>
+
+  <button class="close-btn" onclick="closeModals()">Close</button>
+</div>
+
+<script>
+function goHome() {
+  // lOWER
+  window.location.href = "index.html";
+}
+
+function openSupport() {
+  document.getElementById("supportModal").classList.add("active");
+}
+
+function openAbout() {
+  document.getElementById("aboutModal").classList.add("active");
+}
+
+function closeModals() {
+  document.getElementById("supportModal").classList.remove("active");
+  document.getElementById("aboutModal").classList.remove("active");
+}
+</script>
+
+<script>
+// ===== MEDIUM TEXT HIGHLIGHTER (3 colors + localStorage) =====
+(function() {
+  const palette = document.getElementById('highlight-palette');
+  if (!palette) return;
+
+  const clearBtn = palette.querySelector('#hp-clear');
+  let currentStem = null;
+  let currentRange = null;
+  let currentKey = null;
+
+    function computeStorageKey(stem) {
+    // اگر اپ قبلاً یک کلید مشخص برای این سؤال ست کرده باشد، از همان استفاده کن
+    if (window.currentQuestionStorageKey) {
+      return window.currentQuestionStorageKey;
+    }
+
+    // در غیر این صورت: fallback روی هش متن
+    const txt = (stem.textContent || '').slice(0, 5000);
+    let hash = 0;
+    for (let i = 0; i < txt.length; i++) {
+      hash = (hash * 31 + txt.charCodeAt(i)) | 0;
+    }
+    return 'HL_' + window.location.pathname + '_' + hash;
+  }
+
+
+  function loadHighlights(stem) {
+    const key = computeStorageKey(stem);
+    currentKey = key;
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        stem.innerHTML = saved;
+      }
+    } catch (e) {
+      console.warn('Highlight load error', e);
+    }
+  }
+
+  function saveHighlights() {
+    if (!currentStem || !currentKey) return;
+    try {
+      localStorage.setItem(currentKey, currentStem.innerHTML);
+    } catch (e) {
+      console.warn('Highlight save error', e);
+    }
+  }
+
+  function getSelectionRange() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+    const range = sel.getRangeAt(0);
+    if (!currentStem || !currentStem.contains(range.commonAncestorContainer)) return null;
+    return range;
+  }
+
+  function showPalette(range) {
+    if (!range) return;
+    const rect = range.getBoundingClientRect();
+    if (!rect || (rect.width === 0 && rect.height === 0)) return;
+
+    palette.style.display = 'flex';
+
+    const paletteWidth = palette.offsetWidth || 140;
+    const paletteHeight = palette.offsetHeight || 36;
+
+    let top = rect.top + window.scrollY - paletteHeight - 8;
+    let left = rect.left + window.scrollX + rect.width / 2 - paletteWidth / 2;
+
+    if (top < 0) {
+      top = rect.bottom + window.scrollY + 8;
+    }
+    if (left < 8) left = 8;
+
+    palette.style.top = top + 'px';
+    palette.style.left = left + 'px';
+  }
+
+  function hidePalette() {
+    palette.style.display = 'none';
+    currentRange = null;
+  }
+
+  function applyHighlight(colorClass) {
+    if (!currentRange || !currentStem) return;
+
+    const span = document.createElement('span');
+    span.className = colorClass;
+
+    span.appendChild(currentRange.extractContents());
+    currentRange.insertNode(span);
+
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+
+    hidePalette();
+    saveHighlights();
+  }
+
+  function clearAllHighlights() {
+    if (!currentStem) return;
+    const spans = currentStem.querySelectorAll('.hl-yellow, .hl-green, .hl-blue');
+    spans.forEach(sp => {
+      const parent = sp.parentNode;
+      while (sp.firstChild) {
+        parent.insertBefore(sp.firstChild, sp);
+      }
+      parent.removeChild(sp);
+    });
+    hidePalette();
+    saveHighlights();
+  }
+
+  function handleSelection() {
+    if (!currentStem) return;
+    const range = getSelectionRange();
+    if (!range) {
+      hidePalette();
+      return;
+    }
+    currentRange = range.cloneRange();
+    showPalette(range);
+  }
+
+  function attachToStem(stem) {
+    if (!stem || stem === currentStem) return;
+
+    currentStem = stem;
+    loadHighlights(stem);
+
+    stem.onmouseup = function() {
+      setTimeout(handleSelection, 50);
+    };
+    stem.ontouchend = function() {
+      setTimeout(handleSelection, 80);
+    };
+  }
+
+  palette.addEventListener('click', function(e) {
+    const colorBtn = e.target.closest('.hp-color');
+    if (colorBtn) {
+      const cls = colorBtn.getAttribute('data-color');
+      if (cls) applyHighlight(cls);
+      return;
+    }
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      clearAllHighlights();
+    });
+  }
+
+  document.addEventListener('scroll', function() {
+    hidePalette();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!palette.contains(e.target)) {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) {
+        hidePalette();
+      }
+    }
+  });
+
+      // Watch for question-stem creation in Learning / Exam / Review
+  setInterval(function() {
+    const stem = document.querySelector('.question-stem');
+    if (!stem) return;
+    if (stem !== currentStem) {
+      attachToStem(stem);
+    }
+  }, 500);
+})();
+</script>
+
+<script>
+  // === Medicine Academy Splash Logic (show only once per session) ===
+  document.addEventListener("DOMContentLoaded", function () {
+    var splash = document.getElementById("ma-splash-overlay");
+    if (!splash) return;
+
+    // If splash was already shown in this tab/session, remove it immediately
+    try {
+      if (window.sessionStorage && sessionStorage.getItem("maSplashShown") === "1") {
+        if (splash.parentNode) {
+          splash.parentNode.removeChild(splash);
+        }
+        return;
+      }
+    } catch (e) {
+      // ignore storage errors and just show splash normally
+    }
+
+    // Mark as shown for this session
+    try {
+      if (window.sessionStorage) {
+        sessionStorage.setItem("maSplashShown", "1");
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // Normal 3-second splash behavior
+    setTimeout(function () {
+      splash.classList.add("ma-splash-hide");
+
+      setTimeout(function () {
+        if (splash && splash.parentNode) {
+          splash.parentNode.removeChild(splash);
+        }
+      }, 450); // match CSS transition
+    }, 3000);
+  });
+</script>
+<script>
+(function () {
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function lockSystem(reason) {
+    try {
+      if (window.sessionStorage && sessionStorage.getItem("maHeaderLocked") === "1") {
+        return;
+      }
+      if (window.sessionStorage) {
+        sessionStorage.setItem("maHeaderLocked", "1");
+      }
+    } catch (e) {
+      // ignore storage errors
+    }
+
+    document.documentElement.classList.remove("dark");
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.background = "#050913";
+    document.body.style.color = "#e8f4ff";
+    document.body.style.fontFamily = "Arial, Helvetica, sans-serif";
+
+    document.body.innerHTML = `
+      <div style="
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px;
+      ">
+        <div style="
+          max-width:480px;
+          width:100%;
+          background:rgba(7,16,30,0.96);
+          border-radius:18px;
+          padding:26px 22px 22px;
+          box-shadow:0 18px 45px rgba(0,0,0,0.7);
+          text-align:center;
+          color:#e8f4ff;
+        ">
+          <div style="
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:0.16em;
+            opacity:0.8;
+            margin-bottom:6px;
+          ">
+            Medicine Academy Protection
+          </div>
+          <h2 style="margin:0 0 10px 0;font-size:22px;">System Locked</h2>
+          <p style="font-size:14px;line-height:1.6;margin:0 0 16px 0;">
+            This copy failed a header integrity verification check and has been disabled.
+          </p>
+          <p style="font-size:12px;line-height:1.6;opacity:0.85;margin:0 0 18px 0;">
+            Reason: <span style="font-weight:bold;">${escapeHtml(reason || "Header was modified")}</span>
+          </p>
+          <div style="
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:0.12em;
+            opacity:0.7;
+          ">
+            Do not remove the Medicine Academy header
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function checkHeader() {
+    try {
+      var brand = document.querySelector(".topbar .brand");
+      if (!brand) {
+        lockSystem("Header brand element missing");
+        return;
+      }
+
+      var titleEl = brand.querySelector(".title");
+      if (!titleEl) {
+        lockSystem("Header title element missing");
+        return;
+      }
+
+      var titleText = (titleEl.textContent || "").trim().toLowerCase();
+      if (titleText !== "medicine academy") {
+        lockSystem("Header title text changed");
+        return;
+      }
+
+      var logoImg = brand.querySelector("img");
+      if (!logoImg) {
+        lockSystem("Header logo image missing");
+        return;
+      }
+
+      var src = (logoImg.getAttribute("src") || "").toLowerCase();
+      if (src.indexOf("medicine-logo") === -1) {
+        lockSystem("Header logo source changed");
+        return;
+      }
+    } catch (e) {
+      lockSystem("Header integrity check error");
+    }
+  }
+
+  window.addEventListener("load", function () {
+    setTimeout(checkHeader, 800);      // first check after load
+    setInterval(checkHeader, 15000);   // re-check every 15s
+  });
+})();
+</script>
+
+
+</body>
+</html>
