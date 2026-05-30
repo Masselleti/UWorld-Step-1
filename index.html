@@ -1274,6 +1274,512 @@ img {
     vertical-align: top;
 }
 
+/* Hierarchical checkbox tree for the topic selector. */
+.tree-node{margin:5px 0}
+.tree-label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:6px;cursor:pointer;transition:background .2s}
+.tree-label:hover{background:var(--hover-bg)}
+.tree-toggle{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;user-select:none;flex-shrink:0}
+.tree-checkbox{width:18px;height:18px;cursor:pointer;flex-shrink:0}
+.tree-text{flex:1;font-size:14px}
+.tree-count{font-size:12px;color:var(--muted);margin-left:auto;background:var(--hover-bg);padding:2px 8px;border-radius:10px;min-width:24px;text-align:center}
+.tree-children{margin-left:28px;display:none}
+.tree-children.expanded{display:block}
+.tree-node.is-subject > .tree-label{font-weight:600;font-size:15px}
+.tree-node.is-group > .tree-label{font-weight:500}
+.learning-start-bar{display:flex;align-items:center;gap:16px;margin-top:24px;padding:14px 18px;background:var(--card,#fff);border:1px solid var(--border,#e0e0e0);border-radius:10px;position:sticky;bottom:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:50}
+.learning-selected-info{flex:1;font-size:14px;color:var(--text,#222);min-width:200px}
+.learning-selected-info span{color:var(--primary);font-weight:600}
+#learning-start-btn:disabled{opacity:.5;cursor:not-allowed}
+#learning-categories-tree .tree-view{
+  column-count: 2;
+  column-gap: 32px;
+  max-height: none;
+}
+#learning-categories-tree .tree-view > .tree-node.is-subject{
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  display: block;
+}
+@media (max-width: 900px){
+  #learning-categories-tree .tree-view{ column-count: 1; }
+}
+
+/* ===== Lab Values modal (USMLE-style reference popup) ===== */
+.lv-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 9999;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.lv-overlay.is-open { display: flex; }
+.lv-window {
+    background: #fff;
+    width: min(960px, 96vw);
+    height: min(720px, 88vh);
+    display: flex; flex-direction: column;
+    border: 1px solid #777;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    color: #1a1a1a;
+}
+.lv-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #d0d0d0; padding: 8px 14px;
+    border-bottom: 1px solid #999;
+    font-size: 18px; font-weight: 700;
+}
+.lv-title { display: flex; align-items: center; gap: 8px; color: #1a1a1a; }
+.lv-icon { font-size: 18px; }
+.lv-close-btn {
+    background: transparent; border: none; font-size: 22px; cursor: pointer;
+    color: #333; line-height: 1; padding: 0 6px;
+}
+.lv-close-btn:hover { color: #000; }
+.lv-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #fff;
+    border-bottom: 1px solid #e0e0e0; gap: 12px;
+}
+.lv-search {
+    flex: 0 0 220px; height: 30px; padding: 4px 8px;
+    border: 1px solid #888; border-radius: 0; font-size: 13px;
+}
+.lv-si {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #1f72b8; cursor: pointer;
+}
+.lv-si input { margin: 0; }
+.lv-si span { text-decoration: underline; }
+.lv-tabs {
+    display: flex; gap: 4px; padding: 0 14px;
+    background: #fff; border-bottom: 1px solid #b6b6b6;
+}
+.lv-tab {
+    background: #fff; border: 1px solid #b6b6b6; border-bottom: none;
+    padding: 6px 14px; font-size: 13px; cursor: pointer;
+    color: #1a1a1a; border-radius: 4px 4px 0 0;
+    margin-bottom: -1px;
+}
+.lv-tab:hover { background: #f3f3f3; }
+.lv-tab.is-active {
+    background: #e6e9f5;
+    font-weight: 600;
+    border-bottom: 1px solid #e6e9f5;
+}
+.lv-panel {
+    display: none;
+    background: #e6e9f5;
+    overflow-y: auto;
+    padding: 0;
+    flex: 1 1 auto;
+}
+.lv-panel.is-active { display: block; }
+.lv-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; color: #1a1a1a;
+}
+.lv-table thead th {
+    text-align: left; padding: 10px 14px;
+    font-weight: 700; font-size: 14px;
+    border-bottom: 1px solid #cfd2e0;
+    background: #e6e9f5;
+    position: sticky; top: 0;
+}
+.lv-table thead th:nth-child(2) { color: #1f72b8; }
+.lv-table tbody td {
+    padding: 6px 14px;
+    border-bottom: 1px dotted #c5c8d4;
+    vertical-align: top;
+}
+.lv-table tbody td:first-child { width: 50%; }
+.lv-table tbody tr:hover td { background: rgba(255,255,255,0.4); }
+.lv-table .lv-group {
+    padding-left: 14px;
+    font-weight: 600;
+    color: #1f72b8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.lv-table .lv-indent { padding-left: 30px; }
+.lv-table .lv-indent-2 { padding-left: 46px; }
+.lv-table tbody tr.lv-hidden { display: none; }
+
+/* ============================================================
+   UWorld skin (.nbme-skin.uw-skin) — full question-view UI
+   ============================================================ */
+:root { --text-scale: 1; }
+
+/* Dashboard back button shown when inside a question. */
+.topbar-back-btn {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 34px;
+    padding: 0 16px 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    color: #222;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: background 0.15s, box-shadow 0.15s, transform 0.05s;
+    min-height: 34px;
+    line-height: 1;
+}
+.topbar-back-btn:hover { background: #f5f5f5; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+.topbar-back-btn:active { transform: translateY(1px); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.topbar-back-btn .back-arrow { font-size: 15px; line-height: 1; }
+
+/* When inside a question, hide the page chrome so the UW skin owns the viewport. */
+body.in-nbme-question .topbar,
+body.in-nbme-question .header,
+body.in-nbme-question .ma-footer { display: none !important; }
+body.in-nbme-question { padding: 0 !important; background: #fff !important; }
+body.in-nbme-question .container {
+    max-width: none !important; width: 100% !important;
+    margin: 0 !important; padding: 0 !important;
+    border: none !important; border-radius: 0 !important;
+    box-shadow: none !important;
+}
+body.in-nbme-question .content {
+    max-width: none !important; padding: 0 !important; margin: 0 !important;
+    width: 100% !important;
+}
+body.in-nbme-question .content-section { padding: 0 !important; margin: 0 !important; }
+body.in-nbme-question #back-from-learning,
+body.in-nbme-question #back-from-exam,
+body.in-nbme-question #learning-mode > .content > h2,
+body.in-nbme-question #exam-mode > .content > h2,
+body.in-nbme-question #learning-categories-tree,
+body.in-nbme-question #learning-loading,
+body.in-nbme-question #learning-start-bar,
+body.in-nbme-question #learning-help-text,
+body.in-nbme-question #exam-setup { display: none !important; }
+
+.nbme-skin.uw-skin {
+    background: #fff !important;
+    display: grid !important;
+    grid-template-rows: 50px 1fr 36px !important;
+    grid-template-columns: 1fr !important;
+    min-height: 100vh !important;
+    margin: 0 !important; padding: 0 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    color: #222 !important;
+    height: 100vh; max-height: 100vh; overflow: hidden;
+}
+
+/* TOP HEADER (navy bar) */
+.uw-header {
+    grid-row: 1; background: #1f3863 !important; color: #fff !important;
+    display: flex; align-items: stretch; height: 50px;
+    font-size: 11px; font-family: Arial, sans-serif; overflow: hidden;
+}
+.uw-header * { color: #fff !important; }
+.uw-header-left {
+    background: #2a4475; padding: 6px 14px;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid #0a1d3a; min-width: 96px;
+}
+.uw-header-left-title { font-size: 10px; font-weight: 700; line-height: 1.2; letter-spacing: 0.3px; color: #fff !important; }
+.uw-header-iteminfo {
+    padding: 6px 14px; border-right: 1px solid #0a1d3a;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.uw-header-iteminfo .uw-item { font-size: 12px; color: #fff !important; }
+.uw-header-iteminfo .uw-item strong { color: #fff !important; font-weight: 700; }
+.uw-header-iteminfo .uw-qid { font-size: 10px; opacity: 0.85; margin-top: 2px; color: #fff !important; }
+.uw-header strong { color: #fff !important; }
+.uw-header-nav { flex: 1; display: flex; align-items: center; justify-content: center; gap: 24px; }
+.uw-nav-btn {
+    background: transparent; border: none; color: #fff !important; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 0 8px; font-family: inherit; font-size: 9px;
+}
+.uw-nav-btn:hover:not(:disabled) { color: #5cb8ff !important; }
+.uw-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.uw-nav-btn .uw-nav-icon { font-size: 16px; line-height: 1; color: #fff !important; }
+.uw-nav-counter { font-size: 13px; font-weight: 600; padding: 0 4px; color: #fff !important; }
+
+.uw-header-tools { display: flex; align-items: stretch; }
+.uw-tool {
+    background: transparent; border: none; color: #fff; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 9px; border-left: 1px solid #0a1d3a;
+    font-family: inherit; font-size: 9px; gap: 2px; min-width: 50px;
+}
+.uw-tool:hover { background: rgba(255,255,255,0.08); color: #5cb8ff; }
+.uw-tool .uw-tool-icon { font-size: 14px; line-height: 1; }
+.uw-tool.is-active { background: rgba(255,255,255,0.12); }
+
+.uw-body { grid-row: 2; display: grid; grid-template-columns: auto 1fr; overflow: hidden; }
+
+.uw-sidebar {
+    background: #f3f5f7; border-right: 1px solid #d6d9dc;
+    overflow-y: auto; font-size: 12px;
+    min-width: 80px; max-width: 110px; padding: 4px 0;
+    font-family: Arial, sans-serif;
+}
+.uw-q-item { display: flex; align-items: center; gap: 8px; padding: 4px 12px; cursor: pointer; }
+.uw-q-item:hover { background: #e6e9ec; }
+.uw-q-item.is-current { font-weight: 700; background: #e6e9ec; }
+.uw-q-bullet {
+    display: inline-block; width: 8px; height: 8px;
+    border: 1px solid #888; border-radius: 50%;
+    background: transparent; flex-shrink: 0;
+}
+.uw-q-item.is-current .uw-q-bullet { background: #1f3863; border-color: #1f3863; }
+.uw-q-item.is-answered .uw-q-bullet { background: #1f72b8; border-color: #1f72b8; }
+.uw-q-item.is-correct .uw-q-bullet { background: #1f8a4c; border-color: #1f8a4c; }
+.uw-q-item.is-incorrect .uw-q-bullet { background: #c0392b; border-color: #c0392b; }
+.uw-q-flag { font-size: 13px; margin-left: auto; line-height: 1; }
+
+.uw-main {
+    overflow-y: auto; background: #fff;
+    padding: 14px 22px;
+    font-family: Arial, sans-serif;
+    font-size: calc(13px * var(--text-scale));
+    line-height: 1.55; color: #222;
+}
+.uw-mark-row {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 12px; cursor: pointer; font-size: 11px;
+    user-select: none; padding: 2px 0;
+}
+.uw-mark-row input { margin: 0; cursor: pointer; }
+.uw-mark-flag { font-size: 15px; line-height: 1; }
+
+.nbme-skin.uw-skin .question-stem {
+    font-family: Arial, sans-serif !important;
+    font-size: calc(13px * var(--text-scale)) !important;
+    line-height: 1.55 !important; margin-bottom: 14px !important;
+    padding: 0 !important; border: none !important;
+    color: #222 !important; background: transparent !important;
+}
+.nbme-skin.uw-skin .question-stem p { margin-bottom: 10px; }
+.nbme-skin.uw-skin .question-stem img,
+.nbme-skin.uw-skin .commentary-content img,
+.nbme-skin.uw-skin .answer-option img {
+    max-width: 700px !important;
+    max-height: 60vh !important;
+    width: auto !important;
+    height: auto !important;
+    cursor: zoom-in; margin: 8px 0;
+    border: 1px solid #d2d6db; display: block;
+    object-fit: contain;
+}
+
+.nbme-skin.uw-skin .answer-options {
+    border: 1px solid #b9d6ec !important;
+    max-width: 720px !important;
+    padding: 4px 14px !important;
+    border-radius: 2px !important;
+    background: transparent !important; box-shadow: none !important;
+    display: block !important; gap: 0 !important; margin-bottom: 14px !important;
+}
+.nbme-skin.uw-skin .answer-option {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed transparent !important;
+    border-radius: 0 !important;
+    padding: 3px 0 !important; margin: 0 !important;
+    box-shadow: none !important; transform: none !important;
+    display: flex !important; align-items: flex-start !important;
+    gap: 0 !important; min-height: 0 !important;
+}
+.nbme-skin.uw-skin .answer-option:hover:not(.disabled):not(.correct):not(.incorrect):not(.eliminated) {
+    background: #f4f9fd !important;
+}
+.nbme-skin.uw-skin .answer-option.selected,
+.nbme-skin.uw-skin .answer-option.correct,
+.nbme-skin.uw-skin .answer-option.incorrect {
+    background: transparent !important; box-shadow: none !important;
+}
+.nbme-skin.uw-skin .answer-option .option-letter {
+    background: transparent !important; color: #222 !important;
+    border: none !important; border-radius: 0 !important;
+    width: auto !important; min-width: 44px !important; height: auto !important;
+    margin: 0 8px 0 0 !important; padding: 0 !important;
+    font-weight: 600 !important;
+    font-size: calc(13px * var(--text-scale)) !important;
+    line-height: 1.5 !important;
+    display: inline-flex !important; align-items: center !important; gap: 0 !important;
+}
+.nbme-skin.uw-skin .answer-option .option-letter::before {
+    content: ''; display: inline-block;
+    width: 12px; height: 12px;
+    border: 1px solid #555; border-radius: 50%;
+    background: #fff; flex-shrink: 0; margin-right: 8px;
+    box-shadow: inset 0 0 0 0 #fff;
+    transition: box-shadow 0.15s, border-color 0.15s;
+}
+.nbme-skin.uw-skin .answer-option.selected .option-letter::before { box-shadow: inset 0 0 0 3px #1f72b8; border-color: #1f72b8; }
+.nbme-skin.uw-skin .answer-option.correct .option-letter::before { box-shadow: inset 0 0 0 3px #1f8a4c; border-color: #1f8a4c; }
+.nbme-skin.uw-skin .answer-option.incorrect .option-letter::before { box-shadow: inset 0 0 0 3px #c0392b; border-color: #c0392b; }
+.nbme-skin.uw-skin .answer-option .option-letter::after { content: '.'; margin-left: 0; font-weight: 700; }
+.nbme-skin.uw-skin .answer-option .option-text {
+    font-family: Arial, sans-serif !important;
+    font-size: calc(12.5px * var(--text-scale)) !important;
+    line-height: 1.5 !important; font-weight: 400 !important;
+    color: #222 !important; margin: 0 !important; padding: 0 !important; flex: 1;
+}
+.nbme-skin.uw-skin .answer-option .option-text p { margin: 0 !important; }
+.nbme-skin.uw-skin .answer-option.eliminated .option-text { text-decoration: line-through !important; color: #999 !important; }
+.nbme-skin.uw-skin .answer-option.eliminated .option-letter::before { opacity: 0.4; }
+.uw-strike-btn {
+    color: #888; font-size: 11px; text-decoration: line-through;
+    cursor: pointer; padding: 2px 8px; margin-left: 8px;
+    border-radius: 3px; user-select: none;
+    font-family: 'Times New Roman', serif;
+}
+.uw-strike-btn:hover { background: #eee; color: #555; }
+.nbme-skin.uw-skin .answer-option.eliminated .uw-strike-btn { color: #1f72b8; text-decoration: none; }
+
+.nbme-skin.uw-skin .commentary {
+    border: none !important; background: transparent !important;
+    padding: 0 !important; margin-top: 18px !important;
+    font-size: calc(13px * var(--text-scale)) !important;
+    line-height: 1.55 !important; border-radius: 0 !important;
+    max-width: 100%; color: #222 !important;
+}
+.nbme-skin.uw-skin .commentary h4 {
+    color: #1f72b8 !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 8px !important;
+    font-family: Arial, sans-serif !important;
+}
+.nbme-skin.uw-skin .commentary-content { color: #222 !important; background: transparent !important; }
+.nbme-skin.uw-skin .commentary-content p { margin-bottom: 10px; }
+
+/* BOTTOM BAR */
+.uw-bottom-bar {
+    grid-row: 3; background: #fff;
+    border-top: 1px solid #d6d9dc;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 14px; font-size: 11px; color: #444;
+    font-family: Arial, sans-serif;
+}
+.uw-elapsed { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.uw-bottom-tools { display: flex; align-items: center; gap: 16px; }
+.uw-bottom-tool {
+    background: transparent; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    color: #444; font-family: inherit; font-size: 9px; padding: 2px 6px;
+}
+.uw-bottom-tool:hover { color: #1f72b8; }
+.uw-bottom-tool .uw-bottom-tool-icon { font-size: 14px; line-height: 1; }
+.uw-bottom-tool.is-end { color: #c0392b; }
+.uw-bottom-tool.is-end:hover { color: #a52a1f; }
+
+/* Column-header alignment for FSH/TSH-style question tables. */
+.nbme-skin.uw-skin .question-stem > table.uw-stem-column-header {
+    margin-left: 67px !important; margin-top: 6px !important;
+    width: calc(100% - 67px) !important; max-width: 550px !important;
+    table-layout: fixed !important;
+}
+.nbme-skin.uw-skin .answer-option.uw-option-column-row .option-text > table {
+    width: 100% !important; max-width: 550px !important; margin: 0 !important;
+    table-layout: fixed !important;
+}
+.nbme-skin.uw-skin .question-stem > table.uw-stem-column-header td,
+.nbme-skin.uw-skin .question-stem > table.uw-stem-column-header th,
+.nbme-skin.uw-skin .answer-option.uw-option-column-row .option-text > table td,
+.nbme-skin.uw-skin .answer-option.uw-option-column-row .option-text > table th {
+    padding: 4px 8px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* Reverse-color mode (high contrast / dark theme for question view) */
+.nbme-skin.uw-skin.nbme-reverse { background: #1a1a1a !important; color: #f1f1f1 !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-main { background: #1a1a1a !important; color: #f1f1f1 !important; }
+.nbme-skin.uw-skin.nbme-reverse .question-stem,
+.nbme-skin.uw-skin.nbme-reverse .question-stem *,
+.nbme-skin.uw-skin.nbme-reverse .answer-options,
+.nbme-skin.uw-skin.nbme-reverse .answer-options *,
+.nbme-skin.uw-skin.nbme-reverse .answer-option,
+.nbme-skin.uw-skin.nbme-reverse .answer-option *,
+.nbme-skin.uw-skin.nbme-reverse .commentary,
+.nbme-skin.uw-skin.nbme-reverse .commentary *,
+.nbme-skin.uw-skin.nbme-reverse .uw-main,
+.nbme-skin.uw-skin.nbme-reverse .uw-main p,
+.nbme-skin.uw-skin.nbme-reverse .uw-main span,
+.nbme-skin.uw-skin.nbme-reverse .uw-main div,
+.nbme-skin.uw-skin.nbme-reverse .uw-main li,
+.nbme-skin.uw-skin.nbme-reverse .uw-main td,
+.nbme-skin.uw-skin.nbme-reverse .uw-main th,
+.nbme-skin.uw-skin.nbme-reverse .uw-main b,
+.nbme-skin.uw-skin.nbme-reverse .uw-main strong,
+.nbme-skin.uw-skin.nbme-reverse .uw-main em,
+.nbme-skin.uw-skin.nbme-reverse .uw-main i,
+.nbme-skin.uw-skin.nbme-reverse .uw-main h1,
+.nbme-skin.uw-skin.nbme-reverse .uw-main h2,
+.nbme-skin.uw-skin.nbme-reverse .uw-main h3,
+.nbme-skin.uw-skin.nbme-reverse .uw-main h4,
+.nbme-skin.uw-skin.nbme-reverse .uw-main h5 { color: #f1f1f1 !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-main table,
+.nbme-skin.uw-skin.nbme-reverse .uw-main td,
+.nbme-skin.uw-skin.nbme-reverse .uw-main th { border-color: #4a5562 !important; }
+.nbme-skin.uw-skin.nbme-reverse .answer-option.correct,
+.nbme-skin.uw-skin.nbme-reverse .answer-option.correct * { color: #5ec07a !important; }
+.nbme-skin.uw-skin.nbme-reverse .answer-option.incorrect,
+.nbme-skin.uw-skin.nbme-reverse .answer-option.incorrect * { color: #ff6b6b !important; }
+.nbme-skin.uw-skin.nbme-reverse .answer-options { background: #1a1a1a !important; border-color: #4a5562 !important; }
+.nbme-skin.uw-skin.nbme-reverse .answer-option { border-bottom-color: #3a3a3a !important; }
+.nbme-skin.uw-skin.nbme-reverse .commentary { background: transparent !important; }
+.nbme-skin.uw-skin.nbme-reverse .commentary h4 { color: #9ec8ff !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-sidebar { background: #232323 !important; border-color: #3a3a3a !important; color: #ddd !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item { color: #ddd !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-num { color: #ddd !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item:hover { background: #2e2e2e !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-current { background: #3a3a3a !important; color: #fff !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-current .uw-q-num { color: #fff !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-bullet { border-color: #888 !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-current  .uw-q-bullet { background: #6aa9ff !important; border-color: #6aa9ff !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-answered .uw-q-bullet { background: #58a4e8 !important; border-color: #58a4e8 !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-correct  .uw-q-bullet { background: #5ec07a !important; border-color: #5ec07a !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-q-item.is-incorrect .uw-q-bullet { background: #ff6b6b !important; border-color: #ff6b6b !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-bottom-bar { background: #2a2a2a !important; border-color: #4a4a4a !important; color: #ddd !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-bottom-tool { color: #ddd !important; }
+.nbme-skin.uw-skin.nbme-reverse .uw-mark-row { color: #ddd !important; }
+
+/* Reverse-color (high contrast) version of the grid for explanation tables */
+.nbme-skin.uw-skin.nbme-reverse .commentary-content table {
+    border-color: #4a5562 !important;
+    background: #1f1f1f !important;
+}
+.nbme-skin.uw-skin.nbme-reverse .commentary-content table td,
+.nbme-skin.uw-skin.nbme-reverse .commentary-content table th {
+    border-color: #4a5562 !important;
+}
+.nbme-skin.uw-skin.nbme-reverse .commentary-content table th,
+.nbme-skin.uw-skin.nbme-reverse .commentary-content table tr:first-child td {
+    background: #2a3340 !important;
+}
+
+.nbme-skin.uw-skin .commentary { display: none; }
+.nbme-skin.uw-skin .commentary.show { display: block; }
+
+@media (max-width: 768px) {
+    .uw-header { font-size: 9px; }
+    .uw-header-left { min-width: 70px; padding: 4px 8px; }
+    .uw-header-iteminfo { padding: 4px 8px; }
+    .uw-header-iteminfo .uw-item { font-size: 11px; }
+    .uw-tool { min-width: 40px; padding: 0 5px; font-size: 8px; }
+    .uw-tool .uw-tool-icon { font-size: 12px; }
+    .uw-sidebar { min-width: 56px; max-width: 70px; }
+    .uw-main { padding: 10px 12px; }
+    .uw-bottom-tools { gap: 8px; }
+}
+
 </style>
 
 </head>
@@ -1300,6 +1806,9 @@ img {
                 <div class="title">Medicine Academy</div>
             </div>
         </div>
+        <button class="topbar-back-btn" id="topbar-back-btn" onclick="uwExitToHome()" style="display:none; position:absolute; left:16px; top:16px; z-index:10;" title="Back to Dashboard">
+            <span class="back-arrow" aria-hidden="true">&#8592;</span>Dashboard
+        </button>
 
         <div class="header">
             <div class="uworld-logo-wrap uworld-logo-anim">
@@ -1329,12 +1838,24 @@ img {
         <div id="learning-mode" class="content-section">
             <div class="content">
                 <button class="btn btn-primary" id="back-from-learning" style="margin-bottom:20px">← Back</button>
-                <h2 style="margin-bottom: 20px; color: var(--primary);">Select a Category</h2>
+                <h2 style="margin-bottom: 20px; color: var(--primary);">Select Topics</h2>
+                <p id="learning-help-text" style="color: var(--muted); margin-bottom: 16px; display: none;">
+                    Check any combination of subjects, system groups, or specific topics, then click <strong>Start Quiz</strong> to begin a learning-mode session with instant feedback.
+                </p>
                 <div class="loading" id="learning-loading">
                     <div class="spinner"></div>
                     <p>Loading categories...</p>
                 </div>
                 <div id="learning-categories-tree" style="display: none;"></div>
+                <div id="learning-start-bar" class="learning-start-bar" style="display: none;">
+                    <button class="btn btn-secondary" id="learning-select-all-btn" type="button">Select All</button>
+                    <div class="learning-selected-info">
+                        <strong>Selected:</strong>
+                        <span id="learning-selected-count">0</span> topics &middot;
+                        <span id="learning-total-questions">0</span> questions
+                    </div>
+                    <button class="btn btn-primary" id="learning-start-btn" type="button" disabled>Start Quiz →</button>
+                </div>
                 <div id="learning-questions" class="learning-mode" style="display: none;"></div>
             </div>
         </div>
@@ -1383,6 +1904,201 @@ img {
 	<div class="modal" id="media-modal">
 		<span class="modal-close" id="modal-close">&times;</span>
 		<div class="modal-content" id="modal-content"></div>
+	</div>
+
+	<!-- USMLE-style Lab Values reference popup -->
+	<div class="lv-overlay" id="lv-overlay" onclick="if(event.target.id==='lv-overlay') nbmeCloseLabValues()">
+		<div class="lv-window" role="dialog" aria-modal="true" aria-labelledby="lv-title">
+			<div class="lv-titlebar">
+				<div class="lv-title" id="lv-title"><span class="lv-icon">🧪</span> Lab Values</div>
+				<button class="lv-close-btn" type="button" onclick="nbmeCloseLabValues()" aria-label="Close">×</button>
+			</div>
+			<div class="lv-toolbar">
+				<input type="text" class="lv-search" id="lv-search" placeholder="" aria-label="Search lab values">
+				<label class="lv-si"><input type="checkbox" id="lv-si"> <span>SI Reference Intervals</span></label>
+			</div>
+			<div class="lv-tabs" role="tablist">
+				<button class="lv-tab is-active" data-tab="serum" role="tab" aria-selected="true">Serum</button>
+				<button class="lv-tab" data-tab="csf" role="tab" aria-selected="false">Cerebrospinal</button>
+				<button class="lv-tab" data-tab="blood" role="tab" aria-selected="false">Blood</button>
+				<button class="lv-tab" data-tab="urine" role="tab" aria-selected="false">Urine and BMI</button>
+			</div>
+
+			<div class="lv-panel is-active" data-panel="serum">
+				<table class="lv-table">
+					<thead><tr><th>Serum</th><th>Reference Range</th></tr></thead>
+					<tbody>
+						<tr><td>Alanine aminotransferase (ALT)</td><td>10-40 U/L</td></tr>
+						<tr><td>Aspartate aminotransferase (AST)</td><td>12-38 U/L</td></tr>
+						<tr><td>Alkaline phosphatase</td><td>25-100 U/L</td></tr>
+						<tr><td>Amylase</td><td>25-125 U/L</td></tr>
+						<tr><td colspan="2" class="lv-group">Bilirubin</td></tr>
+						<tr><td class="lv-indent">Total</td><td>0.1-1.0 mg/dL</td></tr>
+						<tr><td class="lv-indent">Direct</td><td>0.0-0.3 mg/dL</td></tr>
+						<tr><td>Calcium</td><td>8.4-10.2 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Cholesterol</td></tr>
+						<tr><td class="lv-indent">Total</td><td></td></tr>
+						<tr><td class="lv-indent-2">Normal</td><td>&lt;200 mg/dL</td></tr>
+						<tr><td class="lv-indent-2">High</td><td>&gt;240 mg/dL</td></tr>
+						<tr><td class="lv-indent">HDL</td><td>40-60 mg/dL</td></tr>
+						<tr><td class="lv-indent">LDL</td><td>&lt;160 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Triglycerides</td></tr>
+						<tr><td class="lv-indent">Normal</td><td>&lt;150 mg/dL</td></tr>
+						<tr><td class="lv-indent">Borderline</td><td>151-199 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Cortisol</td></tr>
+						<tr><td class="lv-indent">0800 h</td><td>5-23 µg/dL</td></tr>
+						<tr><td class="lv-indent">1600 h</td><td>3-15 µg/dL</td></tr>
+						<tr><td class="lv-indent">2000 h</td><td>&lt;50% of 0800 h</td></tr>
+						<tr><td colspan="2" class="lv-group">Creatine kinase</td></tr>
+						<tr><td class="lv-indent">Male</td><td>25-90 U/L</td></tr>
+						<tr><td class="lv-indent">Female</td><td>10-70 U/L</td></tr>
+						<tr><td>Creatinine</td><td>0.6-1.2 mg/dL</td></tr>
+						<tr><td>Urea nitrogen</td><td>7-18 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Electrolytes, serum</td></tr>
+						<tr><td class="lv-indent">Sodium (Na<sup>+</sup>)</td><td>136-146 mEq/L</td></tr>
+						<tr><td class="lv-indent">Potassium (K<sup>+</sup>)</td><td>3.5-5.0 mEq/L</td></tr>
+						<tr><td class="lv-indent">Chloride (Cl<sup>-</sup>)</td><td>95-105 mEq/L</td></tr>
+						<tr><td class="lv-indent">Bicarbonate (HCO<sub>3</sub><sup>-</sup>)</td><td>22-28 mEq/L</td></tr>
+						<tr><td class="lv-indent">Magnesium (Mg<sup>2+</sup>)</td><td>1.5-2.0 mEq/L</td></tr>
+						<tr><td colspan="2" class="lv-group">Ferritin</td></tr>
+						<tr><td class="lv-indent">Male</td><td>20-250 ng/mL</td></tr>
+						<tr><td class="lv-indent">Female</td><td>10-120 ng/mL</td></tr>
+						<tr><td colspan="2" class="lv-group">Follicle-stimulating hormone</td></tr>
+						<tr><td class="lv-indent">Male</td><td>4-25 mIU/mL</td></tr>
+						<tr><td class="lv-indent">Female</td><td></td></tr>
+						<tr><td class="lv-indent-2">premenopause</td><td>4-30 mIU/mL</td></tr>
+						<tr><td class="lv-indent-2">midcycle peak</td><td>10-90 mIU/mL</td></tr>
+						<tr><td class="lv-indent-2">postmenopause</td><td>40-250 mIU/mL</td></tr>
+						<tr><td colspan="2" class="lv-group">Glucose</td></tr>
+						<tr><td class="lv-indent">Fasting</td><td>70-110 mg/dL</td></tr>
+						<tr><td class="lv-indent">Random, non-fasting</td><td>&lt;140 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Growth hormone- arginine stimulation</td></tr>
+						<tr><td class="lv-indent">Fasting</td><td>&lt;5 ng/mL</td></tr>
+						<tr><td class="lv-indent">Provocative stimuli</td><td>&gt;7 ng/mL</td></tr>
+						<tr><td colspan="2" class="lv-group">Iron</td></tr>
+						<tr><td class="lv-indent">Male</td><td>65-175 µg/dL</td></tr>
+						<tr><td class="lv-indent">Female</td><td>50-170 µg/dL</td></tr>
+						<tr><td>Total iron-binding capacity</td><td>250-400 µg/dL</td></tr>
+						<tr><td>Transferrin</td><td>200-360 mg/dL</td></tr>
+						<tr><td>Lactate dehydrogenase</td><td>45-200 U/L</td></tr>
+						<tr><td colspan="2" class="lv-group">Luteinizing hormone</td></tr>
+						<tr><td class="lv-indent">Male</td><td>6-23 mIU/mL</td></tr>
+						<tr><td class="lv-indent">Female</td><td></td></tr>
+						<tr><td class="lv-indent-2">follicular phase</td><td>5-30 mIU/mL</td></tr>
+						<tr><td class="lv-indent-2">midcycle</td><td>75-150 mIU/mL</td></tr>
+						<tr><td class="lv-indent-2">postmenopause</td><td>30-200 mIU/mL</td></tr>
+						<tr><td>Osmolality</td><td>275-295 mOsmol/kg H<sub>2</sub>O</td></tr>
+						<tr><td>Intact parathyroid hormone (PTH)</td><td>10-60 pg/mL</td></tr>
+						<tr><td>Phosphorus (inorganic)</td><td>3.0-4.5 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Prolactin (hPRL)</td></tr>
+						<tr><td class="lv-indent">Male</td><td>&lt;17 ng/mL</td></tr>
+						<tr><td class="lv-indent">Female</td><td>&lt;25 ng/mL</td></tr>
+						<tr><td colspan="2" class="lv-group">Proteins</td></tr>
+						<tr><td class="lv-indent">Total</td><td>6.0-7.8 g/dL</td></tr>
+						<tr><td class="lv-indent">Albumin</td><td>3.5-5.5 g/dL</td></tr>
+						<tr><td class="lv-indent">Globulin</td><td>2.3-3.5 g/dL</td></tr>
+						<tr><td>Troponin I</td><td>&lt;0.04 ng/dL</td></tr>
+						<tr><td>TSH</td><td>0.4-4.0 µU/mL</td></tr>
+						<tr><td>Thyroidal iodine (<sup>123</sup>I) uptake</td><td>8%-30% of administered dose/24 h</td></tr>
+						<tr><td>Thyroxine (T<sub>4</sub>)</td><td>5-12 µg/dL</td></tr>
+						<tr><td>Free (T<sub>4</sub>)</td><td>0.9-1.7 ng/dL</td></tr>
+						<tr><td>Triiodothyronine (T<sub>3</sub>) (RIA)</td><td>100-200 ng/dL</td></tr>
+						<tr><td>Triiodothyronine (T<sub>3</sub>) resin uptake</td><td>25%-35%</td></tr>
+						<tr><td>Uric acid</td><td>3.0-8.2 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Immunoglobulins</td></tr>
+						<tr><td class="lv-indent">IgA</td><td>76-390 mg/dL</td></tr>
+						<tr><td class="lv-indent">IgE</td><td>0-380 IU/mL</td></tr>
+						<tr><td class="lv-indent">IgG</td><td>650-1500 mg/dL</td></tr>
+						<tr><td class="lv-indent">IgM</td><td>50-300 mg/dL</td></tr>
+						<tr><td colspan="2" class="lv-group">Gases, arterial blood (room air)</td></tr>
+						<tr><td class="lv-indent">pH</td><td>7.35-7.45</td></tr>
+						<tr><td class="lv-indent">P<sub>CO2</sub></td><td>33-45 mm Hg</td></tr>
+						<tr><td class="lv-indent">P<sub>O2</sub></td><td>75-105 mm Hg</td></tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="lv-panel" data-panel="csf">
+				<table class="lv-table">
+					<thead><tr><th>Cerebrospinal Fluid</th><th>Reference Range</th></tr></thead>
+					<tbody>
+						<tr><td>Cell count</td><td>0-5/mm<sup>3</sup></td></tr>
+						<tr><td>Chloride</td><td>118-132 mEq/L</td></tr>
+						<tr><td>Gamma globulin</td><td>3%-12% total proteins</td></tr>
+						<tr><td>Glucose</td><td>40-70 mg/dL</td></tr>
+						<tr><td>Pressure</td><td>70-180 mm H<sub>2</sub>O</td></tr>
+						<tr><td>Proteins, total</td><td>&lt;40 mg/dL</td></tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="lv-panel" data-panel="blood">
+				<table class="lv-table">
+					<thead><tr><th>Hematologic</th><th>Reference Range</th></tr></thead>
+					<tbody>
+						<tr><td colspan="2" class="lv-group">Erythrocyte count</td></tr>
+						<tr><td class="lv-indent">Male</td><td>4.3-5.9 million/mm<sup>3</sup></td></tr>
+						<tr><td class="lv-indent">Female</td><td>3.5-5.5 million/mm<sup>3</sup></td></tr>
+						<tr><td colspan="2" class="lv-group">Erythrocyte sedimentation rate (Westergren)</td></tr>
+						<tr><td class="lv-indent">Male</td><td>0-15 mm/h</td></tr>
+						<tr><td class="lv-indent">Female</td><td>0-20 mm/h</td></tr>
+						<tr><td colspan="2" class="lv-group">Hematocrit</td></tr>
+						<tr><td class="lv-indent">Male</td><td>41%-53%</td></tr>
+						<tr><td class="lv-indent">Female</td><td>36%-46%</td></tr>
+						<tr><td colspan="2" class="lv-group">Hemoglobin, blood</td></tr>
+						<tr><td class="lv-indent">Male</td><td>13.5-17.5 g/dL</td></tr>
+						<tr><td class="lv-indent">Female</td><td>12.0-16.0 g/dL</td></tr>
+						<tr><td>Hemoglobin A<sub>1c</sub></td><td>≤6%</td></tr>
+						<tr><td>Hemoglobin, plasma</td><td>&lt;4 mg/dL</td></tr>
+						<tr><td>Leukocyte count (WBC)</td><td>4500-11,000/mm<sup>3</sup></td></tr>
+						<tr><td>Neutrophils, segmented</td><td>54%-62%</td></tr>
+						<tr><td>Neutrophils, bands</td><td>3%-5%</td></tr>
+						<tr><td>Eosinophils</td><td>1%-3%</td></tr>
+						<tr><td>Basophils</td><td>0%-0.75%</td></tr>
+						<tr><td>Lymphocytes</td><td>25%-33%</td></tr>
+						<tr><td>Monocytes</td><td>3%-7%</td></tr>
+						<tr><td>CD4+ T-lymphocyte count</td><td>≥500/mm<sup>3</sup></td></tr>
+						<tr><td>Platelet count</td><td>150,000-400,000/mm<sup>3</sup></td></tr>
+						<tr><td>Reticulocyte count</td><td>0.5%-1.5%</td></tr>
+						<tr><td>D-Dimer</td><td>≤250 ng/mL</td></tr>
+						<tr><td>Partial thromboplastin time (PTT) (activated)</td><td>25-40 seconds</td></tr>
+						<tr><td>Prothrombin time (PT)</td><td>11-15 seconds</td></tr>
+						<tr><td>Mean corpuscular hemoglobin (MCH)</td><td>25-35 pg/cell</td></tr>
+						<tr><td>Mean corpuscular hemoglobin concentration (MCHC)</td><td>31%-36% Hb/cell</td></tr>
+						<tr><td>Mean corpuscular volume (MCV)</td><td>80-100 µm<sup>3</sup></td></tr>
+						<tr><td colspan="2" class="lv-group">Volume</td></tr>
+						<tr><td class="lv-indent">Plasma</td><td></td></tr>
+						<tr><td class="lv-indent-2">Male</td><td>25-43 mL/kg</td></tr>
+						<tr><td class="lv-indent-2">Female</td><td>28-45 mL/kg</td></tr>
+						<tr><td class="lv-indent">Red cell</td><td></td></tr>
+						<tr><td class="lv-indent-2">Male</td><td>20-36 mL/kg</td></tr>
+						<tr><td class="lv-indent-2">Female</td><td>19-31 mL/kg</td></tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="lv-panel" data-panel="urine">
+				<table class="lv-table">
+					<thead><tr><th>Urine</th><th>Reference Range</th></tr></thead>
+					<tbody>
+						<tr><td>Calcium</td><td>100-300 mg/24 h</td></tr>
+						<tr><td colspan="2" class="lv-group">Creatinine clearance</td></tr>
+						<tr><td class="lv-indent">Male</td><td>97-137 mL/min</td></tr>
+						<tr><td class="lv-indent">Female</td><td>88-128 mL/min</td></tr>
+						<tr><td>Osmolality</td><td>50-1200 mOsmol/kg H<sub>2</sub>O</td></tr>
+						<tr><td>Oxalate</td><td>8-40 µg/mL</td></tr>
+						<tr><td>Proteins, total</td><td>&lt;150 mg/24 h</td></tr>
+						<tr><td colspan="2" class="lv-group">17-Hydroxycorticosteroids</td></tr>
+						<tr><td class="lv-indent">Male</td><td>3.0-10.0 mg/24 h</td></tr>
+						<tr><td class="lv-indent">Female</td><td>2.0-8.0 mg/24 h</td></tr>
+						<tr><td colspan="2" class="lv-group">17-Ketosteroids, total</td></tr>
+						<tr><td class="lv-indent">Male</td><td>8-20 mg/24 h</td></tr>
+						<tr><td class="lv-indent">Female</td><td>6-15 mg/24 h</td></tr>
+						<tr><td class="lv-group"><strong>Body Mass Index (BMI)</strong></td><td>Adult: 19-25 kg/m<sup>2</sup></td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 
 	<div class="time-up-modal" id="time-up-modal">
@@ -1536,6 +2252,10 @@ img {
             if (typeof uwClearSessionData === 'function') uwClearSessionData();
             currentDatabasePath = '';
             currentDatabase = null;
+            const __lq = document.getElementById('learning-questions');
+            if (__lq) { __lq.classList.remove('nbme-skin'); __lq.classList.remove('uw-skin'); __lq.innerHTML = ''; }
+            document.body.classList.remove('in-nbme-question');
+            if (typeof uwStopTimer === 'function') uwStopTimer();
             showSection('main-menu');
         });
 
@@ -1549,9 +2269,20 @@ img {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            const __backBtn = document.getElementById('topbar-back-btn');
+            if (__backBtn) __backBtn.style.display = (sectionId === 'main-menu') ? 'none' : 'inline-flex';
+            if (sectionId === 'main-menu') {
+                document.body.classList.remove('in-nbme-question');
+                const __lq = document.getElementById('learning-questions');
+                if (__lq) { __lq.classList.remove('nbme-skin'); __lq.classList.remove('uw-skin'); }
+                const __eq = document.getElementById('exam-questions');
+                if (__eq) { __eq.classList.remove('nbme-skin'); __eq.classList.remove('uw-skin'); }
+                if (typeof uwStopTimer === 'function') uwStopTimer();
+            }
         }
 
         function resetExamMode() {
+            if (typeof uwClearSessionData === 'function') uwClearSessionData();
             if (examTimer) {
                 clearInterval(examTimer);
                 examTimer = null;
@@ -1566,6 +2297,12 @@ img {
             document.getElementById('exam-setup').style.display = 'block';
             document.getElementById('exam-questions').style.display = 'none';
             document.getElementById('exam-results').style.display = 'none';
+            const __lq = document.getElementById('learning-questions');
+            if (__lq) { __lq.classList.remove('nbme-skin'); __lq.classList.remove('uw-skin'); }
+            const __eq = document.getElementById('exam-questions');
+            if (__eq) { __eq.classList.remove('nbme-skin'); __eq.classList.remove('uw-skin'); }
+            document.body.classList.remove('in-nbme-question');
+            if (typeof uwStopTimer === 'function') uwStopTimer();
         }
 		async function buildCategoryTreeStructure(structure, currentPath = []) {
 			let paths = [];
@@ -1679,30 +2416,340 @@ img {
         }
 
 
+		let learningSelectedLeaves = new Set();
+
 		async function loadLearningCategories() {
 			document.getElementById('learning-loading').style.display = 'block';
 			document.getElementById('learning-categories-tree').style.display = 'none';
 			document.getElementById('learning-questions').style.display = 'none';
-			
+			document.getElementById('learning-start-bar').style.display = 'none';
+			document.getElementById('learning-help-text').style.display = 'none';
+
 			await loadCategoriesStructure();
-			
-			const paths = await buildCategoryTreeStructure(categoriesStructure);
-			
-			const container = document.getElementById('learning-categories-tree');
-			container.innerHTML = '';
-			
-			if (paths.length === 0) {
+
+			if (!categoriesStructure || categoriesStructure.length === 0) {
 				document.getElementById('learning-loading').innerHTML = '<p>No categories found</p>';
 				return;
 			}
-			
-			await renderLearningTree(paths, container);
-			
+
+			const rootObj = categoriesStructure[0];
+			const rootKey = (typeof rootObj === 'object' && !Array.isArray(rootObj))
+				? Object.keys(rootObj)[0]
+				: String(rootObj);
+			const dbPath = buildCategoryPath([rootKey]);
+
+			const loaded = await loadDatabaseForPath(dbPath);
+			if (!loaded) {
+				document.getElementById('learning-loading').innerHTML = '<p>Failed to load the question database.</p>';
+				return;
+			}
+
+			const tree = buildLearningSubjectTree(dbPath);
+			learningSelectedLeaves.clear();
+
+			const container = document.getElementById('learning-categories-tree');
+			container.innerHTML = '';
+
+			if (tree.length === 0) {
+				document.getElementById('learning-loading').innerHTML = '<p>No topics available.</p>';
+				return;
+			}
+
+			const treeView = document.createElement('div');
+			treeView.className = 'tree-view';
+			renderLearningCheckboxTree(tree, treeView);
+			container.appendChild(treeView);
+
 			document.getElementById('learning-loading').style.display = 'none';
-			document.getElementById('learning-categories-tree').style.display = 'block';
+			container.style.display = 'block';
+			document.getElementById('learning-help-text').style.display = 'block';
+			document.getElementById('learning-start-bar').style.display = 'flex';
+			updateLearningSelectedInfo();
 		}
 
+		function buildLearningSubjectTree(dbPath) {
+			const subjectsRes = currentDatabase.exec(`
+				SELECT s.id, s.name, COUNT(q.id)
+				FROM Subjects s
+				INNER JOIN Questions q ON q.subId = s.id
+				GROUP BY s.id, s.name
+				ORDER BY s.name
+			`);
+			if (!subjectsRes.length || !subjectsRes[0].values.length) return [];
 
+			const sysParen = /^(.+) \(([^()]*)\)$/;
+			const tree = [];
+
+			for (const [subId, subName, subCount] of subjectsRes[0].values) {
+				const sysRes = currentDatabase.exec(`
+					SELECT sys.id, sys.name, COUNT(q.id)
+					FROM Systems sys
+					INNER JOIN Questions q ON q.sysId = sys.id
+					WHERE q.subId = ${subId}
+					GROUP BY sys.id, sys.name
+					ORDER BY sys.name
+				`);
+				const rows = (sysRes.length && sysRes[0].values.length) ? sysRes[0].values : [];
+
+				const groupsMap = new Map();
+				for (const [sysId, sysName, sysCount] of rows) {
+					const m = sysName.match(sysParen);
+					const baseName = m ? m[1] : sysName;
+					const leafName = m ? m[2] : sysName;
+					if (!groupsMap.has(baseName)) {
+						groupsMap.set(baseName, { name: baseName, count: 0, children: [] });
+					}
+					const g = groupsMap.get(baseName);
+					g.count += parseInt(sysCount) || 0;
+					g.children.push({
+						sysId: sysId, subId: subId,
+						name: leafName, count: parseInt(sysCount) || 0,
+						dbPath: dbPath
+					});
+				}
+
+				const groups = Array.from(groupsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+				groups.forEach(g => g.children.sort((a, b) => a.name.localeCompare(b.name)));
+
+				tree.push({
+					subId: subId, name: subName, count: parseInt(subCount) || 0,
+					dbPath: dbPath, children: groups
+				});
+			}
+			return tree;
+		}
+
+		function renderLearningCheckboxTree(tree, container) {
+			tree.forEach(subject => {
+				const subjectNode = makeLearningTreeNode({
+					label: subject.name, count: subject.count, level: 0, type: 'subject'
+				});
+				container.appendChild(subjectNode.nodeDiv);
+
+				subject.children.forEach(group => {
+					const groupNode = makeLearningTreeNode({
+						label: group.name, count: group.count, level: 1, type: 'group'
+					});
+					subjectNode.childrenDiv.appendChild(groupNode.nodeDiv);
+
+					group.children.forEach(leaf => {
+						const leafKey = `${leaf.dbPath}|||${leaf.subId}|||${leaf.sysId}`;
+						const leafNode = makeLearningTreeNode({
+							label: leaf.name, count: leaf.count, level: 2, type: 'leaf',
+							leafKey: leafKey, subId: leaf.subId, sysId: leaf.sysId, dbPath: leaf.dbPath
+						});
+						groupNode.childrenDiv.appendChild(leafNode.nodeDiv);
+					});
+				});
+			});
+		}
+
+		function makeLearningTreeNode(opts) {
+			const nodeDiv = document.createElement('div');
+			nodeDiv.className = 'tree-node is-' + opts.type;
+			nodeDiv.style.marginLeft = `${opts.level * 20}px`;
+
+			const labelDiv = document.createElement('div');
+			labelDiv.className = 'tree-label';
+
+			const checkbox = document.createElement('input');
+			checkbox.type = 'checkbox';
+			checkbox.className = 'tree-checkbox';
+
+			if (opts.type === 'leaf') {
+				checkbox.classList.add('is-leaf');
+				checkbox.dataset.leafKey = opts.leafKey;
+				checkbox.dataset.subId = opts.subId;
+				checkbox.dataset.sysId = opts.sysId;
+				checkbox.dataset.dbPath = opts.dbPath;
+				checkbox.dataset.count = opts.count || 0;
+				checkbox.addEventListener('change', () => {
+					if (checkbox.checked) learningSelectedLeaves.add(opts.leafKey);
+					else learningSelectedLeaves.delete(opts.leafKey);
+					updateAncestorCheckboxes(nodeDiv);
+					updateLearningSelectedInfo();
+				});
+			} else {
+				checkbox.classList.add('is-parent');
+				checkbox.addEventListener('click', (e) => e.stopPropagation());
+				checkbox.addEventListener('change', () => {
+					const want = checkbox.checked;
+					checkbox.indeterminate = false;
+					nodeDiv.querySelectorAll('.tree-checkbox').forEach(child => {
+						if (child === checkbox) return;
+						child.indeterminate = false;
+						if (child.checked !== want) {
+							child.checked = want;
+							if (child.classList.contains('is-leaf')) {
+								if (want) learningSelectedLeaves.add(child.dataset.leafKey);
+								else learningSelectedLeaves.delete(child.dataset.leafKey);
+							}
+						}
+					});
+					updateAncestorCheckboxes(nodeDiv);
+					updateLearningSelectedInfo();
+				});
+			}
+
+			labelDiv.appendChild(checkbox);
+
+			if (opts.type !== 'leaf') {
+				const toggle = document.createElement('span');
+				toggle.className = 'tree-toggle';
+				toggle.textContent = '▶';
+				labelDiv.appendChild(toggle);
+
+				const textSpan = document.createElement('span');
+				textSpan.className = 'tree-text';
+				textSpan.textContent = opts.label;
+				labelDiv.appendChild(textSpan);
+
+				const countSpan = document.createElement('span');
+				countSpan.className = 'tree-count';
+				countSpan.textContent = opts.count;
+				labelDiv.appendChild(countSpan);
+
+				const childrenDiv = document.createElement('div');
+				childrenDiv.className = 'tree-children';
+
+				labelDiv.addEventListener('click', (e) => {
+					if (e.target === checkbox) return;
+					const expanded = childrenDiv.classList.toggle('expanded');
+					toggle.textContent = expanded ? '▼' : '▶';
+				});
+
+				nodeDiv.appendChild(labelDiv);
+				nodeDiv.appendChild(childrenDiv);
+				return { nodeDiv, childrenDiv, checkbox };
+			} else {
+				const textSpan = document.createElement('span');
+				textSpan.className = 'tree-text';
+				textSpan.textContent = opts.label;
+				labelDiv.appendChild(textSpan);
+
+				const countSpan = document.createElement('span');
+				countSpan.className = 'tree-count';
+				countSpan.textContent = opts.count;
+				labelDiv.appendChild(countSpan);
+
+				labelDiv.addEventListener('click', (e) => {
+					if (e.target === checkbox) return;
+					checkbox.checked = !checkbox.checked;
+					checkbox.dispatchEvent(new Event('change'));
+				});
+
+				nodeDiv.appendChild(labelDiv);
+				return { nodeDiv, checkbox };
+			}
+		}
+
+		function updateAncestorCheckboxes(startNode) {
+			let cursor = startNode.parentElement;
+			while (cursor) {
+				if (cursor.classList && cursor.classList.contains('tree-children')) {
+					const parentNode = cursor.parentElement;
+					if (!parentNode) break;
+					const parentCb = parentNode.querySelector(':scope > .tree-label > .tree-checkbox.is-parent');
+					if (parentCb) {
+						const leaves = cursor.querySelectorAll('.tree-checkbox.is-leaf');
+						let total = 0, checked = 0;
+						leaves.forEach(l => { total++; if (l.checked) checked++; });
+						if (total === 0 || checked === 0) { parentCb.checked = false; parentCb.indeterminate = false; }
+						else if (checked === total) { parentCb.checked = true; parentCb.indeterminate = false; }
+						else { parentCb.checked = false; parentCb.indeterminate = true; }
+					}
+					cursor = parentNode.parentElement;
+				} else {
+					cursor = cursor.parentElement;
+				}
+			}
+		}
+
+		function updateLearningSelectedInfo() {
+			const checked = document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-leaf:checked');
+			let totalQs = 0;
+			checked.forEach(cb => { totalQs += parseInt(cb.dataset.count) || 0; });
+			const countEl = document.getElementById('learning-selected-count');
+			const totalEl = document.getElementById('learning-total-questions');
+			const startBtn = document.getElementById('learning-start-btn');
+			if (countEl) countEl.textContent = checked.length;
+			if (totalEl) totalEl.textContent = totalQs;
+			if (startBtn) startBtn.disabled = (checked.length === 0);
+
+			const allLeaves = document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-leaf');
+			const selectAllBtn = document.getElementById('learning-select-all-btn');
+			if (selectAllBtn) {
+				const allChecked = allLeaves.length > 0 && checked.length === allLeaves.length;
+				selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+			}
+		}
+
+		async function startLearningQuiz() {
+			const checked = Array.from(document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-leaf:checked'));
+			if (checked.length === 0) { alert('Please select at least one topic.'); return; }
+
+			const byPath = new Map();
+			checked.forEach(cb => {
+				const path = cb.dataset.dbPath;
+				if (!byPath.has(path)) byPath.set(path, []);
+				byPath.get(path).push({ subId: parseInt(cb.dataset.subId), sysId: parseInt(cb.dataset.sysId) });
+			});
+
+			currentQuestions = [];
+			for (const [dbPath, pairs] of byPath) {
+				const ok = await loadDatabaseForPath(dbPath);
+				if (!ok) continue;
+				const where = pairs.map(p => `(subId = ${p.subId} AND sysId = ${p.sysId})`).join(' OR ');
+				const result = currentDatabase.exec(`SELECT id FROM Questions WHERE ${where}`);
+				if (result.length && result[0].values.length) {
+					result[0].values.forEach(row => {
+						currentQuestions.push({ id: row[0], dbPath: dbPath });
+					});
+				}
+			}
+
+			if (currentQuestions.length === 0) { alert('No questions available for the selected topics.'); return; }
+
+			for (let i = currentQuestions.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
+			}
+
+			currentQuestionIndex = 0;
+			userAnswers = {};
+			learningAnswered = false;
+			currentMode = 'learning';
+
+			document.getElementById('learning-categories-tree').style.display = 'none';
+			document.getElementById('learning-start-bar').style.display = 'none';
+			document.getElementById('learning-help-text').style.display = 'none';
+			document.getElementById('learning-questions').style.display = 'block';
+
+			await displayLearningQuestion();
+		}
+
+		// Wire up the Start Quiz & Select All buttons
+		document.getElementById('learning-start-btn').addEventListener('click', startLearningQuiz);
+		document.getElementById('learning-select-all-btn').addEventListener('click', () => {
+			const leaves = document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-leaf');
+			if (leaves.length === 0) return;
+			const allChecked = Array.from(leaves).every(cb => cb.checked);
+			const want = !allChecked;
+			leaves.forEach(cb => {
+				if (cb.checked !== want) {
+					cb.checked = want;
+					if (want) learningSelectedLeaves.add(cb.dataset.leafKey);
+					else learningSelectedLeaves.delete(cb.dataset.leafKey);
+				}
+			});
+			document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-parent').forEach(pcb => {
+				pcb.checked = want;
+				pcb.indeterminate = false;
+			});
+			updateLearningSelectedInfo();
+		});
+
+		// Unused — kept as a no-op shim because old call sites may still reference it.
 		async function renderLearningTree(items, container, level = 0) {
 			for (const item of items) {
 				const nodeDiv = document.createElement('div');
@@ -1830,63 +2877,101 @@ img {
             const questionObj = currentQuestions[currentQuestionIndex];
             await loadDatabaseForPath(questionObj.dbPath);
             const questionData = getQuestionData(questionObj.id);
-            learningAnswered = false;
-            
+            learningAnswered = (userAnswers[questionObj.id] !== undefined);
+
+            const flagKey = `MA_FLAG|||${questionObj.dbPath}|||${questionObj.id}`;
+            const isFlagged = localStorage.getItem(flagKey) === 'true';
+            const total = currentQuestions.length;
+            const idx = currentQuestionIndex + 1;
+            const isLast = currentQuestionIndex === total - 1;
+
             let html = `
-                <div class="progress-section">
-                    <div class="progress-bar" id="progress-bar">
-                        <div class="progress-fill" style="width: ${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%"></div>
+                <div class="uw-header">
+                    <div class="uw-header-left">
+                        <div class="uw-header-left-title">Question</div>
+                        <div class="uw-header-left-title">Status</div>
                     </div>
-                    <div class="progress-tooltip" id="progress-tooltip"></div>
-                    <div class="progress-info">
-                        <span>Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</span>
-                        <span>${Math.round(((currentQuestionIndex + 1) / currentQuestions.length) * 100)}%</span>
+                    <div class="uw-header-iteminfo">
+                        <div class="uw-item">Item: <strong>${idx} of ${total}</strong></div>
+                        <div class="uw-qid">Question Id: ${questionObj.id}</div>
+                    </div>
+                    <div class="uw-header-nav">
+                        <button class="uw-nav-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''} onclick="previousLearningQuestion()" title="Previous item">
+                            <span class="uw-nav-icon">←</span><span>Previous</span>
+                        </button>
+                        <span class="uw-nav-counter">${idx} / ${total}</span>
+                        <button class="uw-nav-btn" ${isLast ? 'disabled' : ''} onclick="nextLearningQuestion()" title="Next item">
+                            <span class="uw-nav-icon">→</span><span>Next</span>
+                        </button>
+                    </div>
+                    <div class="uw-header-tools">
+                        <button class="uw-tool" onclick="if(document.fullscreenElement){document.exitFullscreen();}else{document.documentElement.requestFullscreen();}" title="Toggle full screen">
+                            <span class="uw-tool-icon">⛶</span><span>Full Screen</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeOpenLabValues()" title="Lab Values">
+                            <span class="uw-tool-icon">🧪</span><span>Lab Values</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeOpenCalculator()" title="Calculator">
+                            <span class="uw-tool-icon">🧮</span><span>Calculator</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeToggleReverse()" title="Reverse colors (high contrast)">
+                            <span class="uw-tool-icon">◐</span><span>Reverse Color</span>
+                        </button>
+                        <button class="uw-tool" onclick="uwAdjustFont(-0.05)" title="Smaller text">
+                            <span class="uw-tool-icon">A⁻</span><span>Text Zoom</span>
+                        </button>
+                        <button class="uw-tool" onclick="uwAdjustFont(0.05)" title="Larger text">
+                            <span class="uw-tool-icon">A⁺</span><span>Text Zoom</span>
+                        </button>
                     </div>
                 </div>
-                
-                <div class="question-card">
-                    <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
-                    
-                    <div class="answer-options">
-                        ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, false, false)}
-                    </div>
-                    
-                    <div class="commentary" id="commentary-${questionObj.id}">
-                        <h4>Explanation:</h4>
-                        <div class="commentary-content">${generateMediaHTML(stripStyles(questionData.explanation || 'No explanation available.'))}</div>
+                <div class="uw-body">
+                    <div class="uw-sidebar" id="uw-sidebar"></div>
+                    <div class="uw-main">
+                        <label class="uw-mark-row" id="uw-mark-row">
+                            <input type="checkbox" id="uw-mark-cb" ${isFlagged ? 'checked' : ''} onclick="window.uwToggleMark(event, '${flagKey}');">
+                            <span class="uw-mark-flag">🚩</span>
+                            <span>Mark Question</span>
+                        </label>
+                        <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
+                        <div class="answer-options">
+                            ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, false, false)}
+                        </div>
+                        <div class="commentary ${learningAnswered ? 'show' : ''}" id="commentary-${questionObj.id}">
+                            <h4>Explanation</h4>
+                            <div class="commentary-content">${generateMediaHTML(stripStyles(questionData.explanation || 'No explanation available.'))}</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="navigation">
-                    <button id="prev-learning-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''}>⏮ Previous</button>
-                    <button id="back-to-categories-btn" class="center-btn">Back to Topics</button>
-                    <button id="next-learning-btn" ${currentQuestionIndex === currentQuestions.length - 1 ? 'disabled' : ''}>Next ⏭</button>
+                <div class="uw-bottom-bar">
+                    <div class="uw-elapsed" id="uw-elapsed">⏱ Block Time Elapsed: 00:00:00</div>
+                    <div class="uw-bottom-tools">
+                        <button class="uw-bottom-tool is-end" onclick="if(confirm('End the block and return to the dashboard?')) { uwExitToHome(); }" title="End block">
+                            <span class="uw-bottom-tool-icon">⏹</span><span>End Block</span>
+                        </button>
+                    </div>
                 </div>
             `;
-            
-            document.getElementById('learning-questions').innerHTML = html;
-                        window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
 
-            
-            setupProgressBar();
-            
+            const __container = document.getElementById('learning-questions');
+            __container.classList.add('nbme-skin');
+            __container.classList.add('uw-skin');
+            document.body.classList.add('in-nbme-question');
+            __container.innerHTML = html;
+            window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
+
+            if (typeof uwRenderSidebar === 'function') uwRenderSidebar();
+            if (typeof uwStartTimer === 'function') uwStartTimer();
+            if (typeof uwInjectStrikeButtons === 'function') uwInjectStrikeButtons();
+            if (typeof uwAlignStemHeaderTable === 'function') uwAlignStemHeaderTable();
+            const __backBtn = document.getElementById('topbar-back-btn');
+            if (__backBtn) __backBtn.style.display = 'none';
+
             questionData.answers.forEach((answer) => {
                 const optionEl = document.querySelector(`.answer-option[data-option-id="${answer.answerID}"]`);
                 if (optionEl) {
                     optionEl.addEventListener('click', () => selectLearningAnswer(questionObj.id, answer.answerID, answer.isCorrect, questionData.answers));
                 }
-            });
-            
-            if (currentQuestionIndex > 0) {
-                document.getElementById('prev-learning-btn').addEventListener('click', previousLearningQuestion);
-            }
-            if (currentQuestionIndex < currentQuestions.length - 1) {
-                document.getElementById('next-learning-btn').addEventListener('click', nextLearningQuestion);
-            }
-            
-            document.getElementById('back-to-categories-btn').addEventListener('click', () => {
-                document.getElementById('learning-questions').style.display = 'none';
-                document.getElementById('learning-categories-tree').style.display = 'block';
             });
         }
 
@@ -2330,81 +3415,110 @@ function updateSelectedInfo() {
         async function displayExamQuestion() {
             const questionObj = currentQuestions[currentQuestionIndex];
             await loadDatabaseForPath(questionObj.dbPath);
-            
+
             const questionData = getQuestionData(questionObj.id);
-            const isLast = currentQuestionIndex === currentQuestions.length - 1;
-            
+            const total = currentQuestions.length;
+            const idx = currentQuestionIndex + 1;
+            const isLast = currentQuestionIndex === total - 1;
+            const flagKey = `MA_FLAG|||${questionObj.dbPath}|||${questionObj.id}`;
+            const isFlagged = localStorage.getItem(flagKey) === 'true';
+
             let html = `
-                <div class="progress-section">
-                    <div class="progress-bar" id="progress-bar">
-                        <div class="progress-fill" style="width: ${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%"></div>
+                <div class="uw-header">
+                    <div class="uw-header-left">
+                        <div class="uw-header-left-title">Question</div>
+                        <div class="uw-header-left-title">Status</div>
                     </div>
-                    <div class="progress-tooltip" id="progress-tooltip"></div>
-                    <div class="progress-info">
-                        <span>Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</span>
-                        <span>${Math.round(((currentQuestionIndex + 1) / currentQuestions.length) * 100)}%</span>
+                    <div class="uw-header-iteminfo">
+                        <div class="uw-item">Item: <strong>${idx} of ${total}</strong></div>
+                        <div class="uw-qid">Question Id: ${questionObj.id}</div>
+                    </div>
+                    <div class="uw-header-nav">
+                        <button class="uw-nav-btn" ${currentQuestionIndex === 0 || examTimeExpired ? 'disabled' : ''} onclick="previousExamQuestion()" title="Previous item">
+                            <span class="uw-nav-icon">←</span><span>Previous</span>
+                        </button>
+                        <span class="uw-nav-counter">${idx} / ${total}</span>
+                        <button class="uw-nav-btn" ${examTimeExpired || isLast ? 'disabled' : ''} onclick="nextExamQuestion()" title="Next item">
+                            <span class="uw-nav-icon">→</span><span>Next</span>
+                        </button>
+                    </div>
+                    <div class="uw-header-tools">
+                        <button class="uw-tool" onclick="if(document.fullscreenElement){document.exitFullscreen();}else{document.documentElement.requestFullscreen();}" title="Toggle full screen">
+                            <span class="uw-tool-icon">⛶</span><span>Full Screen</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeOpenLabValues()" title="Lab Values">
+                            <span class="uw-tool-icon">🧪</span><span>Lab Values</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeOpenCalculator()" title="Calculator">
+                            <span class="uw-tool-icon">🧮</span><span>Calculator</span>
+                        </button>
+                        <button class="uw-tool" onclick="nbmeToggleReverse()" title="Reverse colors (high contrast)">
+                            <span class="uw-tool-icon">◐</span><span>Reverse Color</span>
+                        </button>
+                        <button class="uw-tool" onclick="uwAdjustFont(-0.05)" title="Smaller text">
+                            <span class="uw-tool-icon">A⁻</span><span>Text Zoom</span>
+                        </button>
+                        <button class="uw-tool" onclick="uwAdjustFont(0.05)" title="Larger text">
+                            <span class="uw-tool-icon">A⁺</span><span>Text Zoom</span>
+                        </button>
                     </div>
                 </div>
-                
-                <div class="question-card">
-                    <div class="question-header">
-                        <div class="question-number">Question ${currentQuestionIndex + 1}</div>
-                        <div class="timer" id="timer">⏱ Loading...</div>
-                    </div>
-                    
-                    <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
-                    
-                    <div class="answer-options">
-                        ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, true, examTimeExpired)}
+                <div class="uw-body">
+                    <div class="uw-sidebar" id="uw-sidebar"></div>
+                    <div class="uw-main">
+                        <label class="uw-mark-row" id="uw-mark-row">
+                            <input type="checkbox" id="uw-mark-cb" ${isFlagged ? 'checked' : ''} onclick="window.uwToggleMark(event, '${flagKey}');">
+                            <span class="uw-mark-flag">🚩</span>
+                            <span>Mark Question</span>
+                        </label>
+                        <div class="uw-exam-timer" id="timer" style="font-family:'Courier New',monospace; font-size:12px; color:#888; margin-bottom:8px;">⏱ Loading...</div>
+                        <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
+                        <div class="answer-options">
+                            ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, true, examTimeExpired)}
+                        </div>
                     </div>
                 </div>
-                
-                <div class="navigation">
-                    <button id="prev-exam-btn" ${currentQuestionIndex === 0 || examTimeExpired ? 'disabled' : ''}>⏮ Previous</button>
-                    <button id="finish-exam-btn" class="center-btn">Finish Exam</button>
-                    <button id="next-exam-btn" ${examTimeExpired || isLast ? 'disabled' : ''}>Next ⏭</button>
+                <div class="uw-bottom-bar">
+                    <div class="uw-elapsed" id="uw-elapsed">⏱ Block Time Elapsed: 00:00:00</div>
+                    <div class="uw-bottom-tools">
+                        <button class="uw-bottom-tool" onclick="showExamResults()" title="Finish exam">
+                            <span class="uw-bottom-tool-icon">📊</span><span>Finish</span>
+                        </button>
+                        <button class="uw-bottom-tool is-end" onclick="if(confirm('End the block and return to the dashboard?')) { uwExitToHome(); }" title="End block">
+                            <span class="uw-bottom-tool-icon">⏹</span><span>End Block</span>
+                        </button>
+                    </div>
                 </div>
             `;
-            
-            document.getElementById('exam-questions').innerHTML = html;
 
+            const __container = document.getElementById('exam-questions');
+            __container.classList.add('nbme-skin');
+            __container.classList.add('uw-skin');
+            document.body.classList.add('in-nbme-question');
+            __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_exam_' + questionObj.id;
 
-            
+            if (typeof uwRenderSidebar === 'function') uwRenderSidebar();
+            if (typeof uwStartTimer === 'function') uwStartTimer();
+            if (typeof uwInjectStrikeButtons === 'function') uwInjectStrikeButtons();
+            if (typeof uwAlignStemHeaderTable === 'function') uwAlignStemHeaderTable();
+            const __backBtn = document.getElementById('topbar-back-btn');
+            if (__backBtn) __backBtn.style.display = 'none';
+
             updateTimerDisplay();
-            setupProgressBar();
-            
-			if (!examTimeExpired) {
-				const allOptions = document.querySelectorAll('.answer-option');
-				allOptions.forEach((optionEl) => {
-					const answerId = parseInt(optionEl.getAttribute('data-option-id'));
-					const answerData = questionData.answers.find(a => a.answerID === answerId);
-					if (answerData) {
-						optionEl.style.cursor = 'pointer';
-						optionEl.addEventListener('click', function() {
-							selectExamAnswer(questionObj.id, answerData.answerID, answerData.isCorrect);
-						});
-					}
-				});
-                
-                if (currentQuestionIndex > 0) {
-                    const prevBtn = document.getElementById('prev-exam-btn');
-                    if (prevBtn) {
-                        prevBtn.addEventListener('click', previousExamQuestion);
+
+            if (!examTimeExpired) {
+                const allOptions = document.querySelectorAll('.answer-option');
+                allOptions.forEach((optionEl) => {
+                    const answerId = parseInt(optionEl.getAttribute('data-option-id'));
+                    const answerData = questionData.answers.find(a => a.answerID === answerId);
+                    if (answerData) {
+                        optionEl.style.cursor = 'pointer';
+                        optionEl.addEventListener('click', function() {
+                            selectExamAnswer(questionObj.id, answerData.answerID, answerData.isCorrect);
+                        });
                     }
-                }
-                
-                const finishBtn = document.getElementById('finish-exam-btn');
-                if (finishBtn) {
-                    finishBtn.addEventListener('click', showExamResults);
-                }
-                
-                if (!isLast) {
-                    const nextBtn = document.getElementById('next-exam-btn');
-                    if (nextBtn) {
-                        nextBtn.addEventListener('click', nextExamQuestion);
-                    }
-                }
+                });
             }
         }
 
@@ -2854,23 +3968,253 @@ function updateSelectedInfo() {
             }
         });
 
-        // Clear all saved highlights + flags when leaving a quiz so the next
-        // session starts clean.  Keeps non-quiz keys (font scale etc.).
+        // ===== Lab Values modal: open/close, tab switching, search =====
+        function nbmeOpenLabValues() {
+            const overlay = document.getElementById('lv-overlay');
+            if (!overlay) return;
+            overlay.classList.add('is-open');
+            const search = document.getElementById('lv-search');
+            if (search) { search.value = ''; lvFilterRows(''); setTimeout(() => search.focus(), 0); }
+        }
+        function nbmeCloseLabValues() {
+            const overlay = document.getElementById('lv-overlay');
+            if (overlay) overlay.classList.remove('is-open');
+        }
+        function lvSwitchTab(tabName) {
+            document.querySelectorAll('.lv-tab').forEach(t => {
+                const on = t.dataset.tab === tabName;
+                t.classList.toggle('is-active', on);
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            document.querySelectorAll('.lv-panel').forEach(p => {
+                p.classList.toggle('is-active', p.dataset.panel === tabName);
+            });
+        }
+        function lvFilterRows(query) {
+            const q = (query || '').trim().toLowerCase();
+            document.querySelectorAll('.lv-panel.is-active .lv-table tbody tr').forEach(tr => {
+                if (!q) { tr.classList.remove('lv-hidden'); return; }
+                const text = tr.textContent.toLowerCase();
+                tr.classList.toggle('lv-hidden', !text.includes(q));
+            });
+        }
+        document.querySelectorAll('.lv-tab').forEach(t => {
+            t.addEventListener('click', () => lvSwitchTab(t.dataset.tab));
+        });
+        (function() {
+            const search = document.getElementById('lv-search');
+            if (search) search.addEventListener('input', e => lvFilterRows(e.target.value));
+        })();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('lv-overlay');
+                if (overlay && overlay.classList.contains('is-open')) nbmeCloseLabValues();
+            }
+        });
+        window.nbmeOpenLabValues = nbmeOpenLabValues;
+        window.nbmeCloseLabValues = nbmeCloseLabValues;
+
+        // Clear all saved highlights + flags + in-memory answer state when
+        // leaving a quiz so each new session starts completely clean.
+        // Preserves user preferences such as font scale.
         function uwClearSessionData() {
             try {
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && (key.startsWith('HL_') || key.startsWith('MA_FLAG'))) {
+                    if (!key) continue;
+                    // Wipe quiz session keys; keep user-preference keys.
+                    if (key.startsWith('HL_') || key.startsWith('MA_FLAG')) {
                         keysToRemove.push(key);
                     }
                 }
                 keysToRemove.forEach(k => localStorage.removeItem(k));
+                // Also clear in-memory answer state so it cannot leak between
+                // sessions if the page is not fully reloaded.
+                try { if (typeof userAnswers !== 'undefined') userAnswers = {}; } catch (_) {}
+                try { if (typeof selectedCategories !== 'undefined' && selectedCategories && selectedCategories.clear) selectedCategories.clear(); } catch (_) {}
             } catch (e) {
                 console.warn('uwClearSessionData error', e);
             }
         }
         window.uwClearSessionData = uwClearSessionData;
+
+        // ============== UW skin helper layer (ported from Step 2) ==============
+        function uwExitToHome() {
+            uwClearSessionData();
+            const __lq = document.getElementById('learning-questions');
+            if (__lq) { __lq.classList.remove('nbme-skin'); __lq.classList.remove('uw-skin'); __lq.innerHTML = ''; __lq.style.display = 'none'; }
+            const __eq = document.getElementById('exam-questions');
+            if (__eq) { __eq.classList.remove('nbme-skin'); __eq.classList.remove('uw-skin'); __eq.innerHTML = ''; __eq.style.display = 'none'; }
+            const __tree = document.getElementById('learning-categories-tree');
+            if (__tree) __tree.style.display = '';
+            document.body.classList.remove('in-nbme-question');
+            if (typeof uwStopTimer === 'function') uwStopTimer();
+            if (typeof resetExamMode === 'function') resetExamMode();
+            if (typeof showSection === 'function') showSection('main-menu');
+        }
+        function nbmeToggleReverse() {
+            const target = document.querySelector('.uw-skin');
+            if (target) target.classList.toggle('nbme-reverse');
+        }
+        function nbmeOpenCalculator() {
+            const w = window.open('', 'nbme_calc', 'width=320,height=440,resizable=yes');
+            if (!w) { alert('Calculator popup blocked. Please allow popups for this page.'); return; }
+            w.document.write(`<!doctype html><html><head><title>Calculator</title><style>
+                body{font-family:Verdana,Arial,sans-serif;background:#2f343c;color:#fff;margin:0;padding:10px;}
+                #d{background:#1a1a1a;color:#0f0;font-family:'Courier New',monospace;font-size:22px;padding:10px;text-align:right;border:1px solid #555;margin-bottom:8px;min-height:30px;border-radius:3px;overflow:hidden;}
+                .row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px;}
+                button{background:#4a525c;color:#fff;border:1px solid #1a1d22;padding:14px 0;font-size:16px;cursor:pointer;border-radius:3px;font-family:inherit;}
+                button:hover{background:#5a626c;} button.op{background:#2a6694;} button.eq{background:#1f8a4c;} button.cl{background:#c0392b;}
+            </style></head><body>
+                <div id="d">0</div>
+                <div class="row"><button class="cl" onclick="d.textContent='0'">C</button><button onclick="bs()">⌫</button><button class="op" onclick="o('%')">%</button><button class="op" onclick="o('/')">÷</button></div>
+                <div class="row"><button onclick="i('7')">7</button><button onclick="i('8')">8</button><button onclick="i('9')">9</button><button class="op" onclick="o('*')">×</button></div>
+                <div class="row"><button onclick="i('4')">4</button><button onclick="i('5')">5</button><button onclick="i('6')">6</button><button class="op" onclick="o('-')">−</button></div>
+                <div class="row"><button onclick="i('1')">1</button><button onclick="i('2')">2</button><button onclick="i('3')">3</button><button class="op" onclick="o('+')">+</button></div>
+                <div class="row"><button onclick="i('0')" style="grid-column:span 2">0</button><button onclick="i('.')">.</button><button class="eq" onclick="ev()">=</button></div>
+                <script>
+                    var d=document.getElementById('d'),f=true;
+                    function i(c){if(f){d.textContent=c;f=false;}else if(d.textContent==='0'&&c!=='.'){d.textContent=c;}else{d.textContent+=c;}}
+                    function o(c){d.textContent+=c;f=false;}
+                    function bs(){d.textContent=d.textContent.slice(0,-1)||'0';}
+                    function ev(){try{var r=Function('return ('+d.textContent.replace(/×/g,'*').replace(/÷/g,'/')+')')();d.textContent=r;f=true;}catch(e){d.textContent='Error';f=true;}}
+                <\/script>
+            </body></html>`);
+            w.document.close();
+        }
+        function uwAdjustFont(delta) {
+            let f = parseFloat(localStorage.getItem('ma_font_scale')) || 1;
+            f += delta;
+            if (f < 0.8) f = 0.8;
+            if (f > 1.5) f = 1.5;
+            document.documentElement.style.setProperty('--text-scale', f.toFixed(2));
+            localStorage.setItem('ma_font_scale', f.toFixed(2));
+        }
+        (function() {
+            const f = parseFloat(localStorage.getItem('ma_font_scale'));
+            if (f && f >= 0.5 && f <= 2.0) {
+                document.documentElement.style.setProperty('--text-scale', f.toFixed(2));
+            }
+        })();
+
+        let uwElapsedSeconds = 0;
+        let uwElapsedTimer = null;
+        function uwStartTimer() {
+            if (uwElapsedTimer) return;
+            uwElapsedTimer = setInterval(() => {
+                uwElapsedSeconds++;
+                const el = document.getElementById('uw-elapsed');
+                if (el) {
+                    const h = Math.floor(uwElapsedSeconds / 3600);
+                    const m = Math.floor((uwElapsedSeconds % 3600) / 60);
+                    const s = uwElapsedSeconds % 60;
+                    const pad = n => String(n).padStart(2, '0');
+                    el.textContent = '⏱ Block Time Elapsed: ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+                }
+            }, 1000);
+        }
+        function uwStopTimer() {
+            if (uwElapsedTimer) clearInterval(uwElapsedTimer);
+            uwElapsedTimer = null;
+            uwElapsedSeconds = 0;
+        }
+        function uwRenderSidebar() {
+            const sidebar = document.getElementById('uw-sidebar');
+            if (!sidebar || !currentQuestions || currentQuestions.length === 0) return;
+            const isExamMode = (currentMode === 'exam');
+            sidebar.innerHTML = currentQuestions.map((q, i) => {
+                const ans = userAnswers[q.id];
+                const isCurrent = i === currentQuestionIndex;
+                const flagKey = 'MA_FLAG|||' + q.dbPath + '|||' + q.id;
+                const isFlagged = localStorage.getItem(flagKey) === 'true';
+                let cls = 'uw-q-item';
+                if (isCurrent) cls += ' is-current';
+                if (ans) {
+                    if (isExamMode) cls += ' is-answered';
+                    else cls += ans.isCorrect ? ' is-correct' : ' is-incorrect';
+                }
+                if (isFlagged) cls += ' is-flagged';
+                return '<div class="' + cls + '" onclick="uwJumpTo(' + i + ')">'
+                     + '<span class="uw-q-bullet"></span>'
+                     + '<span class="uw-q-num">' + (i + 1) + '</span>'
+                     + (isFlagged ? '<span class="uw-q-flag">🚩</span>' : '')
+                     + '</div>';
+            }).join('');
+        }
+        function uwJumpTo(index) {
+            if (index < 0 || index >= currentQuestions.length) return;
+            if (index === currentQuestionIndex) return;
+            currentQuestionIndex = index;
+            if (currentMode === 'exam') {
+                if (typeof displayExamQuestion === 'function') displayExamQuestion();
+            } else {
+                if (typeof displayLearningQuestion === 'function') displayLearningQuestion();
+            }
+        }
+        function uwToggleMark(ev, flagKey) {
+            ev.stopPropagation();
+            const isFlagged = localStorage.getItem(flagKey) === 'true';
+            if (isFlagged) localStorage.removeItem(flagKey);
+            else localStorage.setItem(flagKey, 'true');
+            uwRenderSidebar();
+        }
+        function uwInjectStrikeButtons() {
+            document.querySelectorAll('.nbme-skin.uw-skin .answer-option').forEach(opt => {
+                if (opt.querySelector('.uw-strike-btn')) return;
+                const strike = document.createElement('span');
+                strike.className = 'uw-strike-btn';
+                strike.textContent = 'ab';
+                strike.title = 'Strike out this choice';
+                strike.onclick = (e) => {
+                    e.stopPropagation();
+                    opt.classList.toggle('eliminated');
+                };
+                opt.appendChild(strike);
+            });
+        }
+        function uwAlignStemHeaderTable() {
+            document.querySelectorAll('.nbme-skin.uw-skin .question-stem').forEach(stem => {
+                const elementChildren = Array.from(stem.children).filter(c => c.nodeType === 1);
+                if (elementChildren.length === 0) return;
+                const lastChild = elementChildren[elementChildren.length - 1];
+                if (!lastChild || lastChild.tagName !== 'TABLE') return;
+                const optionTexts = document.querySelectorAll('.nbme-skin.uw-skin .answer-option .option-text');
+                if (optionTexts.length === 0) return;
+                const allOptionsAreTables = Array.from(optionTexts).every(ot => {
+                    const elKids = Array.from(ot.children).filter(c => c.nodeType === 1);
+                    if (elKids.length !== 1) return false;
+                    if (elKids[0].tagName !== 'TABLE') return false;
+                    const textOutsideTable = Array.from(ot.childNodes)
+                        .filter(n => n.nodeType === 3)
+                        .map(n => n.nodeValue.trim())
+                        .join('');
+                    return textOutsideTable.length === 0;
+                });
+                if (allOptionsAreTables) {
+                    lastChild.classList.add('uw-stem-column-header');
+                    optionTexts.forEach(ot => {
+                        const opt = ot.closest('.answer-option');
+                        if (opt) opt.classList.add('uw-option-column-row');
+                    });
+                }
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (!document.querySelector('.uw-skin')) return;
+            if (e.target.matches('input,textarea')) return;
+            if (e.key === 'ArrowRight') {
+                if (currentMode === 'exam') { if (typeof nextExamQuestion === 'function') nextExamQuestion(); }
+                else { if (typeof nextLearningQuestion === 'function') nextLearningQuestion(); }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentMode === 'exam') { if (typeof previousExamQuestion === 'function') previousExamQuestion(); }
+                else { if (typeof previousLearningQuestion === 'function') previousLearningQuestion(); }
+            }
+        });
+        window.uwStopTimer = uwStopTimer;
+        window.uwToggleMark = uwToggleMark;
+        window.uwExitToHome = uwExitToHome;
+        window.uwAdjustFont = uwAdjustFont;
 
         // footer message rotator removed by request
 
