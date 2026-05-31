@@ -1244,6 +1244,8 @@ img {
     border: 1px solid #b0b8c4 !important;
     margin: 12px auto !important;
     background: #fff !important;
+    max-width: 900px !important;
+    width: auto !important;
 }
 .commentary-content table td,
 .commentary-content table th {
@@ -1573,6 +1575,30 @@ body.in-nbme-question #exam-setup { display: none !important; }
     cursor: zoom-in; margin: 8px 0;
     border: 1px solid #d2d6db; display: block;
     object-fit: contain;
+}
+
+/* Hyperlinks in question stems / answers / explanations — underlined blue */
+.nbme-skin.uw-skin .question-stem a,
+.nbme-skin.uw-skin .commentary-content a,
+.nbme-skin.uw-skin .answer-option a {
+    color: #1f72b8 !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+.nbme-skin.uw-skin .question-stem a:hover,
+.nbme-skin.uw-skin .commentary-content a:hover,
+.nbme-skin.uw-skin .answer-option a:hover {
+    color: #155389 !important;
+}
+.nbme-skin.uw-skin.nbme-reverse .question-stem a,
+.nbme-skin.uw-skin.nbme-reverse .commentary-content a,
+.nbme-skin.uw-skin.nbme-reverse .answer-option a {
+    color: #6aa9ff !important;
+}
+.nbme-skin.uw-skin.nbme-reverse .question-stem a:hover,
+.nbme-skin.uw-skin.nbme-reverse .commentary-content a:hover,
+.nbme-skin.uw-skin.nbme-reverse .answer-option a:hover {
+    color: #9ec8ff !important;
 }
 
 .nbme-skin.uw-skin .answer-options {
@@ -3956,6 +3982,31 @@ function updateSelectedInfo() {
             if (!src) return;
             e.preventDefault();
             openMediaModal(src, img.getAttribute('alt') || '');
+        });
+
+        // Delegated click handler for hyperlinks in question/explanation areas.
+        // UWorld's source HTML embeds two kinds of <a href="..."> links:
+        //   - media references (media/L12345.png) → open in the zoom modal
+        //   - cross-refs to other questions (34651.html) → dead in this app
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+            if (link.closest('#media-modal')) return;
+            if (!link.closest('.question-stem, .answer-option, .commentary-content, .uw-main')) return;
+            const href = link.getAttribute('href') || '';
+            if (!href) return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (/\.(png|jpe?g|gif|webp|bmp)(\?|#|$)/i.test(href)) {
+                const filename = href.split('/').pop().split('\\').pop();
+                const fullPath = `./Data/${currentDatabasePath}/media/${filename}`;
+                openMediaModal(fullPath, link.getAttribute('title') || link.textContent || '');
+                return;
+            }
+            if (/^https?:\/\//i.test(href)) {
+                window.open(href, '_blank', 'noopener');
+                return;
+            }
         });
 
         // Allow Escape to close the media modal too.
