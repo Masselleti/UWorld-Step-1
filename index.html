@@ -3043,9 +3043,9 @@ body.in-nbme-question #exam-setup { display: none !important; }
         function selectLearningAnswer(questionId, selectedId, isCorrect, allAnswers) {
             if (learningAnswered) return;
             learningAnswered = true;
-            
+
             document.getElementById(`commentary-${questionId}`).classList.add('show');
-            
+
             allAnswers.forEach((answer) => {
                 const optionEl = document.querySelector(`.answer-option[data-option-id="${answer.answerID}"]`);
                 if (answer.isCorrect) {
