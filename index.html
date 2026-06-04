@@ -2757,6 +2757,75 @@ body.in-nbme-question #exam-setup { display: none !important; }
 			}
 		}
 
+		// --- Linked multi-item questions ("Item 1 of N" ... "Item N of N") ---
+		// Returns the selected questions grouped so that a linked sequence stays
+		// contiguous and in order. The GROUPS are shuffled, but order WITHIN a
+		// linked set is preserved. Each returned element is an array of question
+		// objects (a standalone question is a group of length 1).
+		async function groupAndShuffleLinked(items) {
+			// Bucket by database path (linked items always live in the same db).
+			const byPath = new Map();
+			items.forEach(it => {
+				if (!byPath.has(it.dbPath)) byPath.set(it.dbPath, []);
+				byPath.get(it.dbPath).push(it);
+			});
+
+			// Read each question's "Item X of Y" position from its text.
+			const info = new Map(); // key: dbPath + '#' + id -> { pos, total }
+			for (const [dbPath, list] of byPath) {
+				const ok = await loadDatabaseForPath(dbPath);
+				if (!ok) continue;
+				const ids = list.map(it => it.id);
+				const res = currentDatabase.exec(
+					`SELECT id, question FROM Questions WHERE id IN (${ids.join(',')})`
+				);
+				if (res.length && res[0].values.length) {
+					res[0].values.forEach(row => {
+						const m = /Item\s+(\d+)\s+of\s+(\d+)/i.exec(row[1] || '');
+						if (m) info.set(dbPath + '#' + row[0], { pos: parseInt(m[1]), total: parseInt(m[2]) });
+					});
+				}
+			}
+
+			// Build groups. Linked items occupy consecutive ids; the "Item 1 of N"
+			// id starts a group and the next N-1 consecutive ids complete it.
+			const groups = [];
+			for (const [dbPath, list] of byPath) {
+				const sorted = list.slice().sort((a, b) => a.id - b.id);
+				const byId = new Map(sorted.map(it => [it.id, it]));
+				const used = new Set();
+				for (const it of sorted) {
+					if (used.has(it.id)) continue;
+					const meta = info.get(dbPath + '#' + it.id);
+					if (meta && meta.pos === 1 && meta.total > 1) {
+						const group = [it];
+						used.add(it.id);
+						let nextId = it.id + 1, expected = 2;
+						while (expected <= meta.total) {
+							const cand = byId.get(nextId);
+							const cmeta = cand ? info.get(dbPath + '#' + nextId) : null;
+							if (cand && cmeta && cmeta.pos === expected && cmeta.total === meta.total) {
+								group.push(cand);
+								used.add(nextId);
+								nextId++; expected++;
+							} else break;
+						}
+						groups.push(group);
+					} else {
+						groups.push([it]);
+						used.add(it.id);
+					}
+				}
+			}
+
+			// Fisher–Yates shuffle of whole groups.
+			for (let i = groups.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[groups[i], groups[j]] = [groups[j], groups[i]];
+			}
+			return groups;
+		}
+
 		async function startLearningQuiz() {
 			const checked = Array.from(document.querySelectorAll('#learning-categories-tree .tree-checkbox.is-leaf:checked'));
 			if (checked.length === 0) { alert('Please select at least one topic.'); return; }
@@ -2783,10 +2852,9 @@ body.in-nbme-question #exam-setup { display: none !important; }
 
 			if (currentQuestions.length === 0) { alert('No questions available for the selected topics.'); return; }
 
-			for (let i = currentQuestions.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
-			}
+			// Shuffle but keep linked "Item X of N" sets together and in order.
+			const learningGroups = await groupAndShuffleLinked(currentQuestions);
+			currentQuestions = learningGroups.flat();
 
 			currentQuestionIndex = 0;
 			userAnswers = {};
@@ -3407,9 +3475,9 @@ function updateSelectedInfo() {
 			
 			let query;
 			if (categoryType === 'subject' && systemId) {
-				query = `SELECT id FROM Questions WHERE subId = ${categoryDbId} AND sysId = ${systemId} ORDER BY RANDOM()`;
+				query = `SELECT id FROM Questions WHERE subId = ${categoryDbId} AND sysId = ${systemId} ORDER BY id`;
 			} else if (categoryType === 'system') {
-				query = `SELECT id FROM Questions WHERE sysId = ${categoryDbId} ORDER BY RANDOM()`;
+				query = `SELECT id FROM Questions WHERE sysId = ${categoryDbId} ORDER BY id`;
 			}
 			
 			const result = currentDatabase.exec(query);
@@ -3431,9 +3499,16 @@ function updateSelectedInfo() {
                 return;
             }
             
-            currentQuestions.sort(() => Math.random() - 0.5);
-            currentQuestions = currentQuestions.slice(0, numQuestions);
-            
+            // Shuffle by group so linked "Item X of N" sets stay together and in
+            // order, then pick up to numQuestions without ever splitting a set.
+            const examGroups = await groupAndShuffleLinked(currentQuestions);
+            const picked = [];
+            for (const g of examGroups) {
+                if (picked.length + g.length <= numQuestions) picked.push(...g);
+                if (picked.length >= numQuestions) break;
+            }
+            currentQuestions = picked;
+
             currentQuestionIndex = 0;
             userAnswers = {};
             examTimeExpired = false;
