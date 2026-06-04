@@ -1806,6 +1806,53 @@ body.in-nbme-question #exam-setup { display: none !important; }
     .uw-bottom-tools { gap: 8px; }
 }
 
+
+
+
+
+/* Option C: circular outline Previous/Next buttons with SVG arrows */
+.uw-nav-btn {
+    background: transparent !important;
+    border: 1.5px solid #fff !important;
+    color: #fff !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+.uw-nav-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.08) !important;
+}
+.uw-nav-btn .uw-nav-icon {
+    font-size: 0 !important;
+    color: transparent !important;
+    width: 14px !important;
+    height: 14px !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+}
+.uw-nav-btn > span:not(.uw-nav-icon) {
+    display: none !important;
+}
+.uw-nav-btn[onclick*="previous"] .uw-nav-icon,
+.uw-nav-btn[onclick*="Previous"] .uw-nav-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M15 18l-6-6 6-6'/></svg>");
+}
+.uw-nav-btn[onclick*="next"] .uw-nav-icon,
+.uw-nav-btn[onclick*="Next"] .uw-nav-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M9 6l6 6-6 6'/></svg>");
+}
+
 </style>
 
 </head>
@@ -4117,7 +4164,41 @@ function updateSelectedInfo() {
                 .row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px;}
                 button{background:#4a525c;color:#fff;border:1px solid #1a1d22;padding:14px 0;font-size:16px;cursor:pointer;border-radius:3px;font-family:inherit;}
                 button:hover{background:#5a626c;} button.op{background:#2a6694;} button.eq{background:#1f8a4c;} button.cl{background:#c0392b;}
-            </style></head><body>
+            
+ in the question header
+   (no text labels, no counter). Overrides the older .uw-nav-btn style. */
+.uw-nav-btn {
+    background: transparent !important;
+    border: 1.5px solid #fff !important;
+    color: #fff !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    flex-direction: row !important;
+    gap: 0 !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
+}
+.uw-nav-btn:hover:not(:disabled) {
+    color: #5cb8ff !important;
+    border-color: #5cb8ff !important;
+}
+.uw-nav-btn .uw-nav-icon {
+    font-size: 16px !important;
+    line-height: 1 !important;
+}
+.uw-nav-btn > span:not(.uw-nav-icon) {
+    display: none !important;
+}
+.uw-nav-counter {
+    display: none !important;
+}
+
+</style></head><body>
                 <div id="d">0</div>
                 <div class="row"><button class="cl" onclick="d.textContent='0'">C</button><button onclick="bs()">⌫</button><button class="op" onclick="o('%')">%</button><button class="op" onclick="o('/')">÷</button></div>
                 <div class="row"><button onclick="i('7')">7</button><button onclick="i('8')">8</button><button onclick="i('9')">9</button><button class="op" onclick="o('*')">×</button></div>
