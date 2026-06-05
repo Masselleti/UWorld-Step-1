@@ -1552,6 +1552,10 @@ body.in-nbme-question #exam-setup { display: none !important; }
 .uw-q-item.is-correct .uw-q-bullet { background: #1f8a4c; border-color: #1f8a4c; }
 .uw-q-item.is-incorrect .uw-q-bullet { background: #c0392b; border-color: #c0392b; }
 .uw-q-flag { font-size: 13px; margin-left: auto; line-height: 1; }
+/* Sidebar question numbers: keep dark in normal mode so they don't
+   inherit a light global-dark-theme color and vanish on the sidebar. */
+.nbme-skin.uw-skin:not(.nbme-reverse) .uw-q-item,
+.nbme-skin.uw-skin:not(.nbme-reverse) .uw-q-num { color: #333 !important; }
 
 .uw-main {
     overflow-y: auto; background: #fff;
