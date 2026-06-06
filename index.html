@@ -3215,6 +3215,17 @@ body.in-nbme-question #exam-setup { display: none !important; }
                     optionEl.addEventListener('click', () => selectLearningAnswer(questionObj.id, answer.answerID, answer.isCorrect, questionData.answers));
                 }
             });
+
+            // Restore answered-state visuals when revisiting a question.
+            const __ua = userAnswers[questionObj.id];
+            if (__ua) {
+                questionData.answers.forEach((answer) => {
+                    const optionEl = document.querySelector(`.answer-option[data-option-id="${answer.answerID}"]`);
+                    if (!optionEl) return;
+                    if (answer.isCorrect) optionEl.classList.add('correct');
+                    if (__ua.answerId === answer.answerID && !answer.isCorrect) optionEl.classList.add('incorrect');
+                });
+            }
         }
 
         function setupProgressBar() {
@@ -3259,6 +3270,8 @@ body.in-nbme-question #exam-setup { display: none !important; }
         function selectLearningAnswer(questionId, selectedId, isCorrect, allAnswers) {
             if (learningAnswered) return;
             learningAnswered = true;
+            // Persist the choice (in-memory) so it restores on navigation.
+            userAnswers[questionId] = { answerId: selectedId, isCorrect };
 
             document.getElementById(`commentary-${questionId}`).classList.add('show');
 
