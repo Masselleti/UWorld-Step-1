@@ -1649,6 +1649,10 @@ body.in-nbme-question #exam-setup { display: none !important; }
 .nbme-skin.uw-skin .answer-option:hover:not(.disabled):not(.correct):not(.incorrect):not(.eliminated) {
     background: #f4f9fd !important;
 }
+/* Reverse mode: subtle dark hover (not bright white) so text stays readable */
+.nbme-skin.uw-skin.nbme-reverse .answer-option:hover:not(.disabled):not(.correct):not(.incorrect):not(.selected):not(.eliminated) {
+    background: #2f2f2f !important;
+}
 .nbme-skin.uw-skin .answer-option.selected,
 .nbme-skin.uw-skin .answer-option.correct,
 .nbme-skin.uw-skin .answer-option.incorrect {
@@ -2274,6 +2278,12 @@ body.in-nbme-question #exam-setup { display: none !important; }
             const isDark = document.documentElement.classList.contains('dark');
             document.getElementById('dark-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
         });
+
+        // Initialize the toggle label to match the current theme on first load.
+        (function () {
+            const __dt = document.getElementById('dark-toggle');
+            if (__dt) __dt.textContent = document.documentElement.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+        })();
 
         async function initSQL() {
             if (SQL) return;
