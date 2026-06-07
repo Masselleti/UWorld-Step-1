@@ -4596,6 +4596,14 @@ function updateSelectedInfo() {
             } else if (e.key === 'ArrowLeft') {
                 if (currentMode === 'exam') { if (typeof previousExamQuestion === 'function') previousExamQuestion(); }
                 else { if (typeof previousLearningQuestion === 'function') previousLearningQuestion(); }
+            } else if (!e.metaKey && !e.ctrlKey && !e.altKey && /^[a-zA-Z]$/.test(e.key)) {
+                // Type a letter to pick the matching answer choice (a -> A, b -> B, ...).
+                const opts = document.querySelectorAll('.answer-option');
+                const idx = e.key.toLowerCase().charCodeAt(0) - 97;
+                if (idx >= 0 && idx < opts.length) {
+                    e.preventDefault();
+                    opts[idx].click();
+                }
             }
         });
         window.uwStopTimer = uwStopTimer;
