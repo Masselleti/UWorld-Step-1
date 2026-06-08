@@ -3201,7 +3201,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
                             <input type="checkbox" id="uw-mark-cb" ${isFlagged ? 'checked' : ''} onclick="window.uwToggleMark(event, '${flagKey}');">
                             <span class="uw-mark-flag">🚩</span>
                             <span>Mark Question</span>
-                        </label>
+                        </label><button type="button" class="uw-copy-btn" onclick="uwCopyQuestion(this)" title="Copy question and answer choices">⧉ Copy</button>
                         <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
                         <div class="answer-options">
                             ${generateAnswerOptionsHTML(questionData.answers, questionObj.id, false, false)}
@@ -3784,7 +3784,7 @@ function updateSelectedInfo() {
                             <input type="checkbox" id="uw-mark-cb" ${isFlagged ? 'checked' : ''} onclick="window.uwToggleMark(event, '${flagKey}');">
                             <span class="uw-mark-flag">🚩</span>
                             <span>Mark Question</span>
-                        </label>
+                        </label><button type="button" class="uw-copy-btn" onclick="uwCopyQuestion(this)" title="Copy question and answer choices">⧉ Copy</button>
                         <div class="uw-exam-timer" id="timer" style="font-family:'Courier New',monospace; font-size:12px; color:#888; margin-bottom:8px;">⏱ Loading...</div>
                         <div class="question-stem">${generateMediaHTML(questionData.question)}</div>
                         <div class="answer-options">
@@ -5107,5 +5107,34 @@ function closeModals() {
 </script>
 
 
+
+<style>
+.uw-copy-btn{display:inline-flex;align-items:center;gap:4px;margin-left:14px;padding:2px 8px;font-size:11px;line-height:1.4;border:1px solid #c3c9d0;border-radius:4px;background:transparent;color:#555;cursor:pointer;vertical-align:middle;font-family:Arial,sans-serif;}
+.uw-copy-btn:hover{background:#eef3f8;color:#1f72b8;border-color:#1f72b8;}
+.nbme-skin.uw-skin.nbme-reverse .uw-copy-btn{border-color:#555;color:#ccc;}
+.nbme-skin.uw-skin.nbme-reverse .uw-copy-btn:hover{background:rgba(255,255,255,0.08);color:#9ec8ff;border-color:#9ec8ff;}
+</style>
+<script>
+window.uwCopyQuestion = function(btn){
+  try{
+    var main = btn.closest('.uw-main') || document;
+    var parts = [];
+    var stem = main.querySelector('.question-stem');
+    if(stem) parts.push((stem.innerText||stem.textContent||'').trim());
+    var choices = [];
+    main.querySelectorAll('.answer-option').forEach(function(opt){
+      var L = opt.querySelector('.option-letter');
+      var T = opt.querySelector('.option-text');
+      if(T){ var t=(T.innerText||T.textContent||'').trim(); if(t) choices.push((L?(L.innerText||L.textContent||'').trim()+'. ':'')+t); }
+    });
+    if(choices.length) parts.push(choices.join('\n'));
+    var text = parts.join('\n\n').trim();
+    function fallback(s){ var ta=document.createElement('textarea'); ta.value=s; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+    function done(){ var o=btn.innerHTML; btn.innerHTML='✓ Copied'; setTimeout(function(){ btn.innerHTML=o; },1200); }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(text); done(); }); }
+    else { fallback(text); done(); }
+  }catch(e){ console.warn('copy failed', e); }
+};
+</script>
 </body>
 </html>
