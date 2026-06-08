@@ -3223,8 +3223,15 @@ body.in-nbme-question #exam-setup { display: none !important; }
             `;
 
             const __container = document.getElementById('learning-questions');
+            const __firstEntry = !__container.classList.contains('uw-skin');
             __container.classList.add('nbme-skin');
             __container.classList.add('uw-skin');
+            // On first entry, match the question view to the global dark theme
+            // (user can still toggle Reverse Color afterwards).
+            if (__firstEntry) {
+                if (document.documentElement.classList.contains('dark')) __container.classList.add('nbme-reverse');
+                else __container.classList.remove('nbme-reverse');
+            }
             document.body.classList.add('in-nbme-question');
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
@@ -3799,8 +3806,15 @@ function updateSelectedInfo() {
             `;
 
             const __container = document.getElementById('exam-questions');
+            const __firstEntry = !__container.classList.contains('uw-skin');
             __container.classList.add('nbme-skin');
             __container.classList.add('uw-skin');
+            // On first entry, match the question view to the global dark theme
+            // (user can still toggle Reverse Color afterwards).
+            if (__firstEntry) {
+                if (document.documentElement.classList.contains('dark')) __container.classList.add('nbme-reverse');
+                else __container.classList.remove('nbme-reverse');
+            }
             document.body.classList.add('in-nbme-question');
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_exam_' + questionObj.id;
