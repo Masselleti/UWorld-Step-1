@@ -4350,6 +4350,12 @@ function updateSelectedInfo() {
                 window.open(href, '_blank', 'noopener');
                 return;
             }
+            // Cross-reference links (e.g. 34759.html) point to UWorld's online
+            // article library, which isn't bundled offline — open a web search
+            // for the link text so the link does something useful instead of nothing.
+            const __xrefTerm = (link.textContent || '').trim();
+            if (__xrefTerm) window.open('https://www.google.com/search?q=' + encodeURIComponent(__xrefTerm), '_blank', 'noopener');
+            return;
         });
 
         // Allow Escape to close the media modal too.
