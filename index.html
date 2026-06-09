@@ -3233,6 +3233,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
                 else __container.classList.remove('nbme-reverse');
             }
             document.body.classList.add('in-nbme-question');
+            if (__firstEntry) window.scrollTo(0, 0);
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
 
@@ -3816,6 +3817,7 @@ function updateSelectedInfo() {
                 else __container.classList.remove('nbme-reverse');
             }
             document.body.classList.add('in-nbme-question');
+            if (__firstEntry) window.scrollTo(0, 0);
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_exam_' + questionObj.id;
 
