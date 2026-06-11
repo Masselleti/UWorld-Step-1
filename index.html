@@ -2,8 +2,8 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="Data/bv.png">
-    <link rel="apple-touch-icon" href="Data/bv.png">
+    <link rel="icon" type="image/png" href="assets/Data/bv.png">
+    <link rel="apple-touch-icon" href="assets/Data/bv.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UWorld - Exam System</title>
 <style>
@@ -1924,7 +1924,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
     <div class="ma-splash-container">
       <div class="ma-splash-box">
         <!-- change logo path if needed -->
-        <img src="Data/medicine-logo-splash.png" alt="Medicine Academy Logo">
+        <img src="assets/Data/medicine-logo-splash.png" alt="Medicine Academy Logo">
         <div class="ma-splash-title">Medicine Academy</div>
         <div class="ma-splash-subtitle">Advanced Medical Education</div>
         <div class="ma-splash-loading"></div>
@@ -1936,13 +1936,13 @@ body.in-nbme-question #exam-setup { display: none !important; }
         <!-- Hidden brand stub required by the integrity check. -->
         <div class="topbar" style="display:none !important;" aria-hidden="true">
             <div class="brand">
-                <img src="Data/medicine-logo.png" alt="" />
+                <img src="assets/Data/medicine-logo.png" alt="" />
                 <div class="title">Medicine Academy</div>
             </div>
         </div>
         <div class="header">
             <div class="uworld-logo-wrap uworld-logo-anim">
-            <img src="Data/bv.png" alt="Uworld Logo" class="uworld-logo-img"></div>
+            <img src="assets/Data/bv.png" alt="Uworld Logo" class="uworld-logo-img"></div>
             <h4>UWorld USMLE Step 1 QBank 2025</h4>
         </div>
 
@@ -2244,8 +2244,8 @@ body.in-nbme-question #exam-setup { display: none !important; }
 
     
 
-    <script src="embedded-assets.js"></script>
-    <script src="js/sql-wasm.js"></script>
+    <script src="assets/embedded-assets.js"></script>
+    <script src="assets/js/sql-wasm.js"></script>
 
     <script>
         let SQL = null;
@@ -2276,7 +2276,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
             if (!box) return;
 
             box.innerHTML = `
-                <img src="Data/medicine-logo-splash.png" alt="Medicine Academy">
+                <img src="assets/Data/medicine-logo-splash.png" alt="Medicine Academy">
                 <div class="ma-splash-title">Medicine Academy</div>
                 <div class="ma-splash-subtitle">${message}</div>
                 <div class="ma-splash-footer">Try opening this folder with a local server if the problem continues.</div>
@@ -2300,7 +2300,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
 
             try {
                 const sqlConfig = {
-                    locateFile: file => `js/${file}`
+                    locateFile: file => `assets/js/${file}`
                 };
 
                 if (isDirectFileLaunch() && window.QBANK_LOCAL_ASSETS) {
@@ -2322,7 +2322,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
                     return;
                 }
 
-                const response = await fetch('Data/categories.json');
+                const response = await fetch('assets/Data/categories.json');
                 if (response.ok) {
                     const data = await response.json();
                     categoriesStructure = data.categories || [];
@@ -2331,7 +2331,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
                 }
             } catch (error) {
                 console.error('Error loading categories:', error);
-                alert('Error loading categories. Please ensure Data/categories.json exists.');
+                alert('Error loading categories. Please ensure assets/Data/categories.json exists.');
                 categoriesStructure = [];
             }
         }
@@ -2346,7 +2346,7 @@ body.in-nbme-question #exam-setup { display: none !important; }
             
             try {
                 await initSQL();
-                const dbPath = `Data/${path}/data.db`;
+                const dbPath = `assets/Data/${path}/data.db`;
                 let databaseBytes = null;
 
                 if (isDirectFileLaunch() && window.QBANK_LOCAL_ASSETS) {
@@ -4253,7 +4253,7 @@ function updateSelectedInfo() {
         }
 
         function applyMediaFallback(img, filename) {
-            const base = `./Data/${currentDatabasePath}/media/`;
+            const base = `./assets/Data/${currentDatabasePath}/media/`;
             const cands = mediaCandidates(filename);
             img.setAttribute('src', base + cands[0]);
             img.setAttribute('data-ma-base', base);
@@ -4271,7 +4271,7 @@ function updateSelectedInfo() {
             const images = temp.querySelectorAll('img');
             images.forEach((img) => {
                 const src = img.getAttribute('src');
-                if (src && !src.startsWith('http') && !src.startsWith('Data/') && !src.startsWith('./Data/')) {
+                if (src && !src.startsWith('http') && !src.startsWith('assets/Data/') && !src.startsWith('./assets/Data/')) {
                     const filename = src.split('/').pop().split('\\').pop();
                     applyMediaFallback(img, filename);
                 }
@@ -4292,7 +4292,7 @@ function updateSelectedInfo() {
             const images = temp.querySelectorAll('img');
             images.forEach(img => {
                 const src = img.getAttribute('src');
-                if (src && !src.startsWith('http') && !src.startsWith('Data/') && !src.startsWith('./Data/')) {
+                if (src && !src.startsWith('http') && !src.startsWith('assets/Data/') && !src.startsWith('./assets/Data/')) {
                     const filename = src.split('/').pop().split('\\').pop();
                     applyMediaFallback(img, filename);
                 }
@@ -4369,7 +4369,7 @@ function updateSelectedInfo() {
             e.stopPropagation();
             if (/\.(png|jpe?g|gif|webp|bmp)(\?|#|$)/i.test(href)) {
                 const filename = href.split('/').pop().split('\\').pop();
-                const fullPath = `./Data/${currentDatabasePath}/media/${filename}`;
+                const fullPath = `./assets/Data/${currentDatabasePath}/media/${filename}`;
                 openMediaModal(fullPath, link.getAttribute('title') || '');
                 return;
             }

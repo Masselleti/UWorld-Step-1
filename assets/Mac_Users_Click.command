@@ -1,5 +1,5 @@
 #!/bin/zsh
-cd "$(dirname "$0")" || exit 1
+cd "$(dirname "$0")/.." || exit 1
 
 PORT=8786
 URL="http://127.0.0.1:${PORT}/index.html"
