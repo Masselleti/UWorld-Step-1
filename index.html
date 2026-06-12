@@ -1636,6 +1636,17 @@ body.in-nbme-question #exam-setup { display: none !important; }
 .nbme-skin.uw-skin.nbme-reverse .answer-option a:hover {
     color: #9ec8ff !important;
 }
+/* Cross-reference links (*.html) have no offline target — show as plain text. */
+.nbme-skin.uw-skin .question-stem a[href$=".html"]:not([href^="http"]),
+.nbme-skin.uw-skin .commentary-content a[href$=".html"]:not([href^="http"]),
+.nbme-skin.uw-skin .answer-option a[href$=".html"]:not([href^="http"]),
+.nbme-skin.uw-skin .question-stem a[href$=".html"]:not([href^="http"]) *,
+.nbme-skin.uw-skin .commentary-content a[href$=".html"]:not([href^="http"]) *,
+.nbme-skin.uw-skin .answer-option a[href$=".html"]:not([href^="http"]) * {
+    color: inherit !important;
+    text-decoration: none !important;
+    cursor: text !important;
+}
 
 .nbme-skin.uw-skin .answer-options {
     border: 1px solid #b9d6ec !important;
@@ -4380,10 +4391,7 @@ function updateSelectedInfo() {
                 return;
             }
             // Cross-reference links (e.g. 34759.html) point to UWorld's online
-            // article library, which isn't bundled offline — open a web search
-            // for the link text so the link does something useful instead of nothing.
-            const __xrefTerm = (link.textContent || '').trim();
-            if (__xrefTerm) window.open('https://www.google.com/search?q=' + encodeURIComponent(__xrefTerm), '_blank', 'noopener');
+            // article library, which isn't bundled offline — do nothing.
             return;
         });
 
