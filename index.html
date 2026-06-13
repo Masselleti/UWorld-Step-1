@@ -3262,10 +3262,14 @@ body.in-nbme-question #exam-setup { display: none !important; }
             }
             document.body.classList.add('in-nbme-question');
             if (__firstEntry) window.scrollTo(0, 0);
+            // Replacing the container destroys the sidebar and its scroll position.
+            // Capture it first, then restore after the sidebar is rebuilt below.
+            const __prevSidebarScroll = (document.getElementById('uw-sidebar') || {}).scrollTop || 0;
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_learning_' + questionObj.id;
 
             if (typeof uwRenderSidebar === 'function') uwRenderSidebar();
+            { const __sb = document.getElementById('uw-sidebar'); if (__sb) __sb.scrollTop = __prevSidebarScroll; }
             if (typeof uwStartTimer === 'function') uwStartTimer();
             if (typeof uwInjectStrikeButtons === 'function') uwInjectStrikeButtons();
             if (typeof uwAlignStemHeaderTable === 'function') uwAlignStemHeaderTable();
@@ -3846,10 +3850,14 @@ function updateSelectedInfo() {
             }
             document.body.classList.add('in-nbme-question');
             if (__firstEntry) window.scrollTo(0, 0);
+            // Replacing the container destroys the sidebar and its scroll position.
+            // Capture it first, then restore after the sidebar is rebuilt below.
+            const __prevSidebarScroll = (document.getElementById('uw-sidebar') || {}).scrollTop || 0;
             __container.innerHTML = html;
             window.currentQuestionStorageKey = 'HL_' + window.location.pathname + '_exam_' + questionObj.id;
 
             if (typeof uwRenderSidebar === 'function') uwRenderSidebar();
+            { const __sb = document.getElementById('uw-sidebar'); if (__sb) __sb.scrollTop = __prevSidebarScroll; }
             if (typeof uwStartTimer === 'function') uwStartTimer();
             if (typeof uwInjectStrikeButtons === 'function') uwInjectStrikeButtons();
             if (typeof uwAlignStemHeaderTable === 'function') uwAlignStemHeaderTable();
@@ -4592,6 +4600,9 @@ function updateSelectedInfo() {
             const sidebar = document.getElementById('uw-sidebar');
             if (!sidebar || !currentQuestions || currentQuestions.length === 0) return;
             const isExamMode = (currentMode === 'exam');
+            // Rebuilding innerHTML resets scrollTop to 0, which yanks the list back
+            // to the top whenever the question changes. Preserve the user's scroll.
+            const savedScrollTop = sidebar.scrollTop;
             sidebar.innerHTML = currentQuestions.map((q, i) => {
                 const ans = userAnswers[q.id];
                 const isCurrent = i === currentQuestionIndex;
@@ -4610,6 +4621,7 @@ function updateSelectedInfo() {
                      + (isFlagged ? '<span class="uw-q-flag">🚩</span>' : '')
                      + '</div>';
             }).join('');
+            sidebar.scrollTop = savedScrollTop;
         }
         function uwJumpTo(index) {
             if (index < 0 || index >= currentQuestions.length) return;
