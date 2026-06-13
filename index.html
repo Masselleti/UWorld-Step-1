@@ -4652,6 +4652,14 @@ function updateSelectedInfo() {
                     opt.classList.toggle('eliminated');
                 };
                 opt.appendChild(strike);
+                // Right-click anywhere on a choice strikes it out; right-click
+                // again removes the strike. Suppress the browser context menu.
+                opt.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    opt.classList.toggle('eliminated');
+                    return false;
+                };
             });
         }
         function uwAlignStemHeaderTable() {
